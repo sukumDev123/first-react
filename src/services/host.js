@@ -1,1 +1,1 @@
-export const host_api = "http://localhost:8080"
+export const host_api = "https://accountancy-web.herokuapp.com"

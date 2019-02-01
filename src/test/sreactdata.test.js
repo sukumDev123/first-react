@@ -21,8 +21,7 @@ const data = [
 
 describe("SreactData Class", () => {
   it("Test SreactData For findUniQMonth", () => {
-    const monthTest = new SreactData(data).findUniQMonth()
-    //expect(monthTest[0]).equal("January")
+    const monthTest = new SreactData().findUniQMonth(data)
     expect(monthTest[0]).equal("February")
   })
   it("Test UniQ For findUniQYear", () => {
@@ -58,5 +57,21 @@ describe("SreactData Class", () => {
     const sreachDataOfYearV = createObj.sreachDataOfYear(1998)
     const handlerResultFromY = createObj.hadnlerDataYear(sreachDataOfYearV)
     expect(handlerResultFromY[0].calDr).equal(450)
+  })
+})
+describe("testtt", () => {
+  it("data 100 <= a <= 399 , 400 <= a <= 500", () => {
+    const arr = [
+      { id: 101, gg: "as" },
+      { id: 201, gg: "as" },
+      { id: 301, gg: "as" },
+      { id: 401, gg: "as" },
+      { id: 501, gg: "as" }
+    ]
+    const gg = arr.filter(d => 100 <= d.id && d.id <= 399)
+    const gg2 = arr.filter(d => 400 <= d.id && d.id <= 599)
+
+    expect(gg.length).equal(3)
+    expect(gg2.length).equal(2)
   })
 })
