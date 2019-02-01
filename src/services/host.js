@@ -1,1 +1,1 @@
-export const host_api = "<API KEY>"
+export const host_api = "http://localhost:8080"

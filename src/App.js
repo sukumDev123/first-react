@@ -1,11 +1,11 @@
 import React, { useReducer } from "react"
 
 import "./App.css"
-import { Form, FromAcc } from "./container/form"
+import { Form, FromAcc } from "./components/form"
 import { HashRouter, Route, Link } from "react-router-dom"
-import { FormBill } from "./container/formBill"
-import { List } from "./container/listAddBill"
-import { HomePage } from "./container/homePage"
+import { FormBill } from "./components/formBill"
+import { List } from "./components/listAddBill"
+import { HomePage } from "./components/homePage"
 import { reducerFirst, typeRedecer } from "./reducers/reducer.bill"
 
 const App = () => {
@@ -31,7 +31,7 @@ const AddAccountenCy = () => {
   const [state, dispatch] = useReducer(reducerFirst, typeRedecer)
   // useE
   return (
-    <div className="container">
+    <div className="components">
       <div className="mt-3">
         <List list={state.accArr} state={state} dispatch={dispatch} />
       </div>
@@ -49,7 +49,7 @@ const AddAccountenCy = () => {
   )
 }
 const addCateroGey = () => (
-  <div className="container">
+  <div className="components">
     <h2 className="text-center font_white p-3"> Add Cateroge </h2>
     <div className="row">
       <div className="col-12 ">
@@ -70,15 +70,6 @@ const NavBar = () => {
         Accountancy
       </h2>
       <nav className="nav flex-column ">
-        {/* <a className="nav-link font_black ml-4" href="/home">
-           
-          </a>
-          <a className="nav-link font_black ml-4" href="/addAcc">
-            
-          </a>
-          <a className="nav-link font_black ml-4" href="/addCate">
-           
-          </a> */}
         <Link className="nav-link font_black ml-4" to="/home">
           <i className="fas fa-home" /> HomePage
         </Link>
@@ -88,7 +79,6 @@ const NavBar = () => {
         <Link className="nav-link font_black ml-4" to="/addCate">
           <i className="fas fa-plus" /> Add CategoryDashboard
         </Link>
-        {/* <h5></h5> */}
       </nav>
     </div>
   )
