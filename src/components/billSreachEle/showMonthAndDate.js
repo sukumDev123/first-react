@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { billAll } from "../../services/categoryS"
+import { billAll, deleteAllOFBill } from "../../services/categoryS"
 import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
 
@@ -29,7 +29,6 @@ export const ShowMonthAndDate = () => {
         setTempArr(handlerData) // all data
       })
       .catch(e => {
-        // alert(errMsg)
         window.location.href = "/#/error"
       })
   }, [])
@@ -137,66 +136,86 @@ const dateHandler = dateIs => {
   )}-${dateN.getFullYear()}`
   return dateForMat
 }
-const TableBillSreach = ({ dataArr, totalCr, totalDr, dataInfo }) => (
-  <div className="p-3" style={{ overflow: "auto", height: "300px" }}>
-    <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
-    <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
+const TableBillSreach = ({ dataArr, totalCr, totalDr, dataInfo }) => {
+  function deleteByIdBill(id_bill) {
+    // alert(id_bill)
+    // eslint-disable-next-line
+    if (confirm(`ต้องการลบบิลรหัสที่ : ${id_bill} นี้หรือไม่ ?`)) {
+      deleteAllOFBill(id_bill).then(dataM => {
+        const { message } = dataM.data
+        alert(message)
+      })
+    }
+  }
+  return (
+    <div className="p-3" style={{ overflow: "auto", height: "300px" }}>
+      <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
+      <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
 
-    <table className="table">
-      <thead>
-        <tr>
-          <th> ชนิด </th>
+      <table className="table">
+        <thead>
+          <tr>
+            <th> ชนิด </th>
 
-          <th> เดบิต </th>
-          <th> เครดิต </th>
-        </tr>
-      </thead>
-      <tbody>
-        {dataInfo.map((drCr, i) => (
-          <tr key={i}>
-            <td className="font_white"> {drCr.name_type} </td>
-
-            <td className="font_white">
-              <NumberFormat
-                value={drCr.dr}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"฿"}
-              />
-            </td>
-            <td className="font_white">
-              <NumberFormat
-                value={drCr.cr}
-                displayType={"text"}
-                thousandSeparator={true}
-                prefix={"฿"}
-              />
-            </td>
+            <th> เดบิต </th>
+            <th> เครดิต </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-    <h5 className="font_white">
-      เดบิตทั้งหมด :
-      <NumberFormat
-        style={{ marginLeft: "20px", marginRight: "20px" }}
-        value={totalDr}
-        displayType={"text"}
-        thousandSeparator={true}
-        prefix={"฿"}
-      />
-      บาท
-    </h5>
-    <h5 className="font_white">
-      เครดิตทั้งหมด :
-      <NumberFormat
-        style={{ marginLeft: "20px", marginRight: "20px" }}
-        value={totalCr}
-        displayType={"text"}
-        thousandSeparator={true}
-        prefix={"฿"}
-      />
-      บาท
-    </h5>
-  </div>
-)
+        </thead>
+        <tbody>
+          {dataInfo.map((drCr, i) => (
+            <tr key={i}>
+              <td className="font_white"> {drCr.name_type} </td>
+
+              <td className="font_white">
+                <NumberFormat
+                  value={drCr.dr}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"฿"}
+                />
+              </td>
+              <td className="font_white">
+                <NumberFormat
+                  value={drCr.cr}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"฿"}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <h5 className="font_white">
+        เดบิตทั้งหมด :
+        <NumberFormat
+          style={{ marginLeft: "20px", marginRight: "20px" }}
+          value={totalDr}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"฿"}
+        />
+        บาท
+      </h5>
+      <h5 className="font_white">
+        เครดิตทั้งหมด :
+        <NumberFormat
+          style={{ marginLeft: "20px", marginRight: "20px" }}
+          value={totalCr}
+          displayType={"text"}
+          thousandSeparator={true}
+          prefix={"฿"}
+        />
+        บาท
+      </h5>
+      <button
+        className="btn btn-danger"
+        onClick={e => deleteByIdBill(dataArr.id_bill)}
+        style={{ cursor: "pointer" }}
+      >
+        {" "}
+        ลบบิลที่ ​: {dataArr.id_bill}{" "}
+      </button>
+    </div>
+  )
+}
