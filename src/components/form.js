@@ -1,6 +1,6 @@
 // const Form = () =>
 import React, { useState, useEffect } from "react"
-import { postCategory, getAccType } from "../services/categoryS"
+import { postCategory, getAccType, deleteAccType } from "../services/categoryS"
 
 export const Form = ({ state, dispatch }) => {
   const [id_bill, setIdBill] = useState(0)
@@ -212,6 +212,19 @@ const ShowBillType = ({ tableType, setTbType }) => {
         window.location.href = "/#/error"
       })
   }, [])
+  function deleteTypeAcc(id_acc, i) {
+    // eslint-disable-next-line
+    if (confirm("ต้องการลบรายการนี้จริงหรือไม่?")) {
+      deleteAccType(id_acc)
+        .then(d => {
+          const { message } = d.data
+          alert(message)
+          tableType.splice(i, 1)
+          setTbType(tableType)
+        })
+        .catch(e => alert("Server มีปัญหา."))
+    }
+  }
   return (
     <table className="table">
       <thead>
@@ -220,6 +233,7 @@ const ShowBillType = ({ tableType, setTbType }) => {
           <th> ชื่อบัญชี </th>
           <th> รหัสหมวดหมู่ </th>
           <th> ชื่อหมวดหมู่ </th>
+          <th> ลบ </th>
         </tr>
       </thead>
       <tbody>
@@ -229,6 +243,9 @@ const ShowBillType = ({ tableType, setTbType }) => {
             <td className="font_white"> {d.name_type} </td>
             <td className="font_white"> {d.id_category} </td>
             <td className="font_white"> {d.category} </td>
+            <td className="font_white" onClick={e => deleteTypeAcc(d.id, i)}>
+              <i className="fas fa-times" />
+            </td>
           </tr>
         ))}
       </tbody>

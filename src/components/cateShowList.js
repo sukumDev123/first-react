@@ -20,26 +20,8 @@ const dataHandlerFunc = (tempArr, data) =>
       drNow
     }
   })
-export const CateShowList = () => {
-  const [dataCate, setDataCate] = useState([])
-  const [tempArr, setTempArr] = useState([])
-  const [tempArrReadO, setTempArrReadO] = useState([])
-  const [sreachMA, setsreachMA] = useState([])
-  const [sreachYA, setsreachYA] = useState([])
-  const [sreachM, setsreachM] = useState(0)
-  const [sreachYear, setsreachY] = useState(0)
-  const sreachType = [
-    { i: "all", v: "ทั้งหมด" },
-    { i: "1", v: "หมวด 100-399" },
-    { i: "2", v: "หมวด 400-500" }
-  ]
-  const [typeSeleted, setTypeSelete] = useState("0")
-  const [canClicked, setCanClick] = useState(false)
-  const [totalCrPlus, setTotalCr] = useState(0)
-  const [totalDrPlus, setTotalDr] = useState(0)
-  const [totalCrNow, setTotalCrNow] = useState(0)
-  const [totalDrNow, setTotalDrNow] = useState(0)
 
+const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
   useEffect(() => {
     billAll()
       .then(res => {
@@ -61,9 +43,39 @@ export const CateShowList = () => {
       })
       .catch(e => (window.location.href = "/#/error"))
   }, [])
+}
+const calCrAndDrTotalAndNow = (
+  setTotalCr,
+  setTotalDr,
+  setTotalCrNow,
+  setTotalDrNow,
+  dataHandler
+) => {
+  const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
+  const totalDrCal = dataHandler.reduce((sum, data) => sum + data.dr, 0)
+  const totalCrNowC = totalCrCal - totalDrCal < 0 ? 0 : totalCrCal - totalDrCal
+  const totalDrNowC = totalDrCal - totalCrCal < 0 ? 0 : totalDrCal - totalCrCal
+  setTotalCr(totalCrCal)
+  setTotalDr(totalDrCal)
+  setTotalCrNow(totalCrNowC)
+  setTotalDrNow(totalDrNowC)
+}
+const sreahFindYear = (
+  setTotalCr,
+  setTotalDr,
+  setTotalCrNow,
+  setTotalDrNow,
+  setsreachMA,
+  setDataCate,
+  setTempArr,
+  sreachYear,
+  tempArr
+) => {
   useEffect(
     () => {
-      const dataHandler = tempArr.filter(d => new Date(d.date_is).getFullYear())
+      const dataHandler = tempArr.filter(
+        d => new Date(d.date_is).getFullYear() === parseInt(sreachYear)
+      )
       const typeEact = dataHandler
         .map(d => parseInt(d.id))
         .sort()
@@ -71,18 +83,14 @@ export const CateShowList = () => {
 
       const setMonth = new SreactData().findUniQMonth(dataHandler)
       const setData = dataHandlerFunc(typeEact, dataHandler)
-      // console.log({ typeEact, dataHandler, setData })
       /** ----- */
-      const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
-      const totalDrCal = dataHandler.reduce((sum, data) => sum + data.dr, 0)
-      const totalCrNowC =
-        totalCrCal - totalDrCal < 0 ? 0 : totalCrCal - totalDrCal
-      const totalDrNowC =
-        totalDrCal - totalCrCal < 0 ? 0 : totalDrCal - totalCrCal
-      setTotalCr(totalCrCal)
-      setTotalDr(totalDrCal)
-      setTotalCrNow(totalCrNowC)
-      setTotalDrNow(totalDrNowC)
+      calCrAndDrTotalAndNow(
+        setTotalCr,
+        setTotalDr,
+        setTotalCrNow,
+        setTotalDrNow,
+        dataHandler
+      )
       /** ----- */
       setsreachMA(setMonth)
       setDataCate(setData)
@@ -90,6 +98,16 @@ export const CateShowList = () => {
     },
     [sreachYear]
   )
+}
+const sreachFindMonth = (
+  setTotalCr,
+  setTotalDr,
+  setTotalCrNow,
+  setTotalDrNow,
+  setDataCate,
+  sreachM,
+  tempArr
+) => {
   useEffect(
     () => {
       const dataHandler = tempArr.filter(
@@ -103,21 +121,20 @@ export const CateShowList = () => {
         .filter((item, index, l) => l.indexOf(item) === index)
       const setData = dataHandlerFunc(typeEact, dataHandler)
       /** ----- */
-      const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
-      const totalDrCal = dataHandler.reduce((sum, data) => sum + data.dr, 0)
-      const totalCrNowC =
-        totalCrCal - totalDrCal < 0 ? 0 : totalCrCal - totalDrCal
-      const totalDrNowC =
-        totalDrCal - totalCrCal < 0 ? 0 : totalDrCal - totalCrCal
-      setTotalCr(totalCrCal)
-      setTotalDr(totalDrCal)
-      setTotalCrNow(totalCrNowC)
-      setTotalDrNow(totalDrNowC)
+      calCrAndDrTotalAndNow(
+        setTotalCr,
+        setTotalDr,
+        setTotalCrNow,
+        setTotalDrNow,
+        dataHandler
+      )
       /** ----- */
       setDataCate(setData)
     },
     [sreachM]
   )
+}
+const setFindTestCase = (typeSeleted, setTempArr, tempArrReadO) => {
   useEffect(
     () => {
       console.log("start", typeSeleted, typeof typeSeleted)
@@ -144,13 +161,49 @@ export const CateShowList = () => {
     },
     [typeSeleted]
   )
-  function resetSreach() {
-    setDataCate([])
-    setsreachMA([])
-    setsreachY("0")
-    setCanClick(false)
-    setTypeSelete("")
-  }
+}
+export const CateShowList = () => {
+  const [dataCate, setDataCate] = useState([])
+  const [tempArr, setTempArr] = useState([])
+  const [tempArrReadO, setTempArrReadO] = useState([])
+  const [sreachMA, setsreachMA] = useState([])
+  const [sreachYA, setsreachYA] = useState([])
+  const [sreachM, setsreachM] = useState(0)
+  const [sreachYear, setsreachY] = useState(0)
+  const sreachType = [
+    { i: "all", v: "ทั้งหมด" },
+    { i: "1", v: "หมวด 100-399" },
+    { i: "2", v: "หมวด 400-500" }
+  ]
+  const [typeSeleted, setTypeSelete] = useState("0")
+  const [canClicked, setCanClick] = useState(false)
+  const [totalCrPlus, setTotalCr] = useState(0)
+  const [totalDrPlus, setTotalDr] = useState(0)
+  const [totalCrNow, setTotalCrNow] = useState(0)
+  const [totalDrNow, setTotalDrNow] = useState(0)
+  getApiOfBill(setsreachYA, setTempArr, setTempArrReadO)
+  sreahFindYear(
+    setTotalCr,
+    setTotalDr,
+    setTotalCrNow,
+    setTotalDrNow,
+    setsreachMA,
+    setDataCate,
+    setTempArr,
+    sreachYear,
+    tempArr
+  )
+  sreachFindMonth(
+    setTotalCr,
+    setTotalDr,
+    setTotalCrNow,
+    setTotalDrNow,
+    setDataCate,
+    sreachM,
+    tempArr
+  )
+  setFindTestCase(typeSeleted, setTempArr, tempArrReadO)
+
   return (
     <div style={{ padding: "20px" }}>
       <Loadding />

@@ -52,6 +52,9 @@ export const List = ({ list, state, dispatch }) => {
           alert("เดบิต และ เครดิตต้องเท่ากัน")
           setBtnClick(false)
         }
+      } else {
+        setBtnClick(false)
+        alert("ใส่ข้อมูล ไม่ครบ")
       }
     } else {
       setBtnClick(false)

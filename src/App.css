@@ -56,7 +56,10 @@ table tbody tr:hover {
 .App-link {
   color: #61dafb;
 }
-
+.fa-times:hover {
+  color: red;
+  cursor: pointer;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
