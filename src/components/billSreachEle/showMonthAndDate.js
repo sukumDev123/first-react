@@ -3,6 +3,7 @@ import { billAll } from "../../services/categoryS"
 import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
 import { Link } from "react-router-dom"
+import { Loadding } from "../../App"
 export const ShowMonthAndDate = () => {
   const [dataBill, setDataBill] = useState([])
   const [monthUni, setMonthUni] = useState([])
@@ -22,7 +23,7 @@ export const ShowMonthAndDate = () => {
             date_is: parseInt(d.date_is)
           }
         })
-
+        document.getElementById("loadding_bk").style.display = "none"
         const setYearUniArr = sreactData.setData(handlerData).findUniQYear()
         setYearArr(setYearUniArr) // arr year uniqlo
         setTempArr(handlerData) // all data
@@ -69,20 +70,18 @@ export const ShowMonthAndDate = () => {
   )
   return (
     <div className="bkShow_Fixed">
-      <Link className="font_white" to="/home">
-        {" "}
-        ปิดหน้าต่างนี้{" "}
-      </Link>
-      <div className="p-3">
-        <h5 className="font_white">Show Month And Date</h5>
+      <Loadding />
+
+      <div>
+        <h5 className="font_white">ค้าหารายการบิล</h5>
         <div className="p-3">
-          <label className="font_white">Selete year beform selete month</label>
+          <label className="font_white">เลือกปีที่ต้องการแสดง</label>
           <select
             value={yearUniSeleted}
             className="form-control"
             onChange={e => setYUS(e.target.value)}
           >
-            <option value="0"> Selected years </option>
+            <option value="0"> เลือกปีที่ต้องการแสดง</option>
 
             {yearArr.map((d, i) => (
               <option key={i}> {d} </option>

@@ -3,6 +3,7 @@ import { billAll } from "../../services/categoryS"
 import { Link } from "react-router-dom"
 import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
+import { Loadding } from "../../App"
 const dateHandler = dateIs => {
   const dateN = new Date(dateIs)
   const dateForMat = `${dateN.getDate()}-${new SreactData().filterMonth(
@@ -28,6 +29,8 @@ export const ShowYearAndMonth = () => {
             date_is: parseInt(res.date_is)
           }
         })
+        document.getElementById("loadding_bk").style.display = "none"
+
         const yearArr = new SreactData(hadnlerA).findUniQYear()
         setTempArr(hadnlerA)
         setYearArr(yearArr)
@@ -79,18 +82,17 @@ export const ShowYearAndMonth = () => {
   return (
     <div>
       <div className="bkShow_Fixed">
-        <Link className="font_white" to="/home">
-          ปิดหน้าต่างนี้
-        </Link>
-        <h5 className="font_white"> ค้นหาข้อมูลรายละเอียด </h5>
+        <Loadding />
+
+        <h5 className="font_white"> ค้นหารายการจากหมวดหมู่ </h5>
         <div className="md-form p-3">
-          <label className="font_white"> ค้นหาจากปี </label>
+          <label className="font_white"> เลือกปีที่ต้องการแสดง </label>
           <select
             className="form-control"
             value={formYearSelete}
             onChange={e => setYearSelete(e.target.value)}
           >
-            <option>เลือกปีที่ต้องหารค้น</option>
+            <option>เลือกปีที่ต้องการแสดง</option>
             {formYearArr.map((d, i) => (
               <option key={i} value={d}>
                 {d}

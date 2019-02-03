@@ -3,6 +3,7 @@ import { billAll } from "../services/categoryS"
 import NumberFormat from "react-number-format"
 import { SreactData } from "../logic/sreactData"
 import { Link } from "react-router-dom"
+import { Loadding } from "../App"
 const dataHandlerFunc = (tempArr, data) =>
   tempArr.map(id_type => {
     const dataDo = data.filter(d => d.id == id_type)
@@ -51,6 +52,8 @@ export const CateShowList = () => {
       })
       // console.log(data)
       const yearSreach = new SreactData(result).findUniQYear()
+      document.getElementById("loadding_bk").style.display = "none"
+
       setsreachYA(yearSreach)
       setTempArr(result)
       setTempArrReadO(result)
@@ -148,7 +151,10 @@ export const CateShowList = () => {
   }
   return (
     <div style={{ padding: "20px" }}>
-      <div>
+      <Loadding />
+      <h5 className="font_white"> ค้นหางบทดลอง </h5>
+
+      <div className="p-3">
         <label className="font_white">เลือกแสดงงบทดลอง</label>
         <select
           className="form-control"
@@ -168,14 +174,14 @@ export const CateShowList = () => {
         </select>
       </div>
       {canClicked === true ? (
-        <div>
-          <label className="font_white">Sreach Year</label>
+        <div className="p-3">
+          <label className="font_white">เลือกปีที่ต้องการแสดง</label>
           <select
             className="form-control"
             value={sreachYear}
             onChange={e => setsreachY(e.target.value)}
           >
-            <option>Sreach</option>
+            <option>เลือกปีที่ต้องการแสดง</option>
             {sreachYA.map((d, i) => (
               <option key={i} value={d}>
                 {d}
@@ -187,7 +193,7 @@ export const CateShowList = () => {
         ""
       )}
       {sreachMA.length ? (
-        <div>
+        <div className="p-3">
           <label className="font_white">Sreach Year</label>
           <select
             className="form-control"

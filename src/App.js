@@ -83,6 +83,17 @@ const NavBar = () => {
     </div>
   )
 }
+export const Loadding = () => (
+  <div id="loadding_bk" className="loadding_bk">
+    <div className="loadingDiv">
+      <div className="loading">
+        <div className="loadingSamll">
+          <small>Loading</small>{" "}
+        </div>
+      </div>
+    </div>
+  </div>
+)
 const AppRouter = () => (
   <HashRouter>
     <App />
