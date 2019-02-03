@@ -11,22 +11,36 @@ import { reducerFirst, typeRedecer } from "./reducers/reducer.bill"
 const App = () => {
   return (
     <div className="bk-black">
+      <Route path="/error" component={errPage} />
+
       <div className="row">
         <div className="col-0 col-md-3">
           <NavBar />
         </div>
         <div className="col-12 col-md-9">
           <Route path="/home" component={HomePage} />
-
           <Route path="/addAcc" component={AddAccountenCy} />
           <Route path="/addCate" component={addCateroGey} />
+          <Route path="/error" component={addCateroGey} />
         </div>
       </div>
       {/* </div> */}
     </div>
   )
 }
-
+const errPage = () => (
+  <div className="errPage">
+    <div className="text-center">
+      <h1 className="p-3">Error Page...</h1>
+      <p>เซิฟเวอร์มีปัญหาขอเวลาอีกไม่นาน...</p>
+      <div className="text-center">
+        <Link className="btn btn-primary" to="/home">
+          Try Agian.
+        </Link>
+      </div>
+    </div>
+  </div>
+)
 const AddAccountenCy = () => {
   const [state, dispatch] = useReducer(reducerFirst, typeRedecer)
   // useE
@@ -71,13 +85,13 @@ const NavBar = () => {
       </h2>
       <nav className="nav flex-column ">
         <Link className="nav-link font_black ml-4" to="/home">
-          <i className="fas fa-home" /> HomePage
+          <i className="fas fa-home" /> หน้าหลัก
         </Link>
         <Link className="nav-link font_black ml-4" to="/addAcc">
-          <i className="fas fa-plus" /> Add Accountancy
+          <i className="fas fa-plus" /> เพิ่มบิล
         </Link>
         <Link className="nav-link font_black ml-4" to="/addCate">
-          <i className="fas fa-plus" /> Add CategoryDashboard
+          <i className="fas fa-plus" /> เพิ่มหมวดหมู่
         </Link>
       </nav>
     </div>

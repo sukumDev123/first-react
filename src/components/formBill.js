@@ -45,13 +45,14 @@ export const FormBill = ({ state, dispatch }) => {
 
   return (
     <div>
-      <form onSubmit={submitForm} className="border-off-form">
+      <form onSubmit={submitForm} className="bk_acc">
         <div className="md-form">
-          <label className="font_white"> รหัสบัญชี </label>
+          <label className="font_black"> รหัสบัญชี </label>
 
           <select
             onChange={e => setIdAcc(e.target.value)}
             className="form-control"
+            placeholder="รหัสบัญชี"
           >
             <option value=""> กรุณาเลือกรายการ </option>
             {acc.length ? (
@@ -66,7 +67,7 @@ export const FormBill = ({ state, dispatch }) => {
           </select>
         </div>
         <div className="md-form">
-          <label className="font_white"> บัญชี </label>
+          <label className="font_black"> บัญชี </label>
           <input
             type="text"
             placeholder="รหัสบัญชี..."
@@ -76,7 +77,7 @@ export const FormBill = ({ state, dispatch }) => {
           />
         </div>
         <div className="md-form">
-          <label className="font_white"> เดบิต </label>
+          <label className="font_black"> เดบิต </label>
           <NumberFormat
             value={dr}
             className="form-control"
@@ -85,7 +86,7 @@ export const FormBill = ({ state, dispatch }) => {
           />
         </div>
         <div className="md-form">
-          <label className="font_white"> เครดิต </label>
+          <label className="font_black"> เครดิต </label>
 
           <NumberFormat
             value={cr}

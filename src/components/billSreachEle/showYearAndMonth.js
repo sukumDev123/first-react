@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { billAll } from "../../services/categoryS"
-import { Link } from "react-router-dom"
+
 import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
 import { Loadding } from "../../App"
@@ -35,7 +35,9 @@ export const ShowYearAndMonth = () => {
         setTempArr(hadnlerA)
         setYearArr(yearArr)
       })
-      .catch(e => console.log({ e }))
+      .catch(e => {
+        window.location.href = "/#/error"
+      })
   }, [])
   useEffect(
     () => {

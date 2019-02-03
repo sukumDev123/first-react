@@ -41,23 +41,25 @@ export const CateShowList = () => {
   const [totalDrNow, setTotalDrNow] = useState(0)
 
   useEffect(() => {
-    billAll().then(res => {
-      // console.log(data)
-      const { data } = res.data
-      const result = data.map(d => {
-        return {
-          ...d,
-          date_is: parseInt(d.date_is)
-        }
-      })
-      // console.log(data)
-      const yearSreach = new SreactData(result).findUniQYear()
-      document.getElementById("loadding_bk").style.display = "none"
+    billAll()
+      .then(res => {
+        // console.log(data)
+        const { data } = res.data
+        const result = data.map(d => {
+          return {
+            ...d,
+            date_is: parseInt(d.date_is)
+          }
+        })
+        // console.log(data)
+        const yearSreach = new SreactData(result).findUniQYear()
+        document.getElementById("loadding_bk").style.display = "none"
 
-      setsreachYA(yearSreach)
-      setTempArr(result)
-      setTempArrReadO(result)
-    })
+        setsreachYA(yearSreach)
+        setTempArr(result)
+        setTempArrReadO(result)
+      })
+      .catch(e => (window.location.href = "/#/error"))
   }, [])
   useEffect(
     () => {

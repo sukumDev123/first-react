@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import { billAll } from "../../services/categoryS"
 import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
-import { Link } from "react-router-dom"
+
 import { Loadding } from "../../App"
 export const ShowMonthAndDate = () => {
   const [dataBill, setDataBill] = useState([])
@@ -28,7 +28,10 @@ export const ShowMonthAndDate = () => {
         setYearArr(setYearUniArr) // arr year uniqlo
         setTempArr(handlerData) // all data
       })
-      .catch(e => console.log({ e }))
+      .catch(e => {
+        // alert(errMsg)
+        window.location.href = "/#/error"
+      })
   }, [])
   useEffect(
     () => {
@@ -73,7 +76,7 @@ export const ShowMonthAndDate = () => {
       <Loadding />
 
       <div>
-        <h5 className="font_white">ค้าหารายการบิล</h5>
+        <h5 className="font_white">ค้นหารายการบิล</h5>
         <div className="p-3">
           <label className="font_white">เลือกปีที่ต้องการแสดง</label>
           <select

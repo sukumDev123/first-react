@@ -1,6 +1,6 @@
 // const Form = () =>
-import React, { useState } from "react"
-import { postCategory } from "../services/categoryS"
+import React, { useState, useEffect } from "react"
+import { postCategory, getAccType } from "../services/categoryS"
 
 export const Form = ({ state, dispatch }) => {
   const [id_bill, setIdBill] = useState(0)
@@ -21,9 +21,9 @@ export const Form = ({ state, dispatch }) => {
     }
   }
   return (
-    <form onSubmit={subMitBillData} className="border-off-form">
+    <form onSubmit={subMitBillData} className="bk_acc">
       <div className="md-form">
-        <label className="font_white">เลขที่รายการ</label>
+        <label className="font_black">เลขที่รายการ</label>
         <input
           type="text"
           placeholder="Input you id buill"
@@ -33,7 +33,7 @@ export const Form = ({ state, dispatch }) => {
         />
       </div>
       <div className="md-form">
-        <label className="font_white">อ้างอิงเอกสาร</label>
+        <label className="font_black">อ้างอิงเอกสาร</label>
         <input
           type="text"
           className="form-control"
@@ -43,7 +43,7 @@ export const Form = ({ state, dispatch }) => {
         />
       </div>
       <div className="md-form">
-        <label className="font_white">วันที่</label>
+        <label className="font_black">วันที่</label>
         <input
           type="date"
           className="form-control"
@@ -52,7 +52,7 @@ export const Form = ({ state, dispatch }) => {
         />
       </div>
       <div className="md-form">
-        <label className="font_white">รายละเอียด</label>
+        <label className="font_black">รายละเอียด</label>
 
         <input
           type="text"
@@ -88,78 +88,150 @@ export const Form = ({ state, dispatch }) => {
 }
 
 export const FromAcc = () => {
-  const [idAcc, setIdAcc] = useState("")
+  const [idAcc, setIdAcc] = useState(0)
   const [nameType, setNameT] = useState("")
   const [id_catgory, setC] = useState(0)
   const [categoryName, setCN] = useState("")
+  const [clickBoolean, setClickBoolean] = useState(false)
+  const [tableType, setTbType] = useState([])
+
   function submitAcc(e) {
     e.preventDefault()
-    if (idAcc && nameType && id_catgory && categoryName) {
-      postCategory({
-        id_acc: idAcc,
-        name_type: nameType,
-        id_catgory,
-        categoryName
+    setClickBoolean(true)
+    if (
+      idAcc &&
+      nameType &&
+      typeof parseInt(id_catgory) == "number" &&
+      categoryName
+    ) {
+      tableType.forEach(d => {
+        if (d.id != idAcc) {
+          postCategory({
+            id_acc: idAcc,
+            name_type: nameType,
+            id_catgory,
+            categoryName
+          })
+            .then(respose => {
+              getAccType()
+                .then(d => {
+                  const { data } = d.data
+                  setTbType(data)
+                  alert(respose.data.message || "add success.")
+                  setNameT("")
+                  setC(0)
+                  setCN("")
+                  setClickBoolean(false)
+                })
+                .catch(e => {
+                  window.location.href = "/#/error"
+                })
+            })
+            .catch(err => {
+              console.log({ err })
+              alert("Server is problem.")
+              setClickBoolean(false)
+            })
+        } else {
+          alert("เลขบัญชีนี้มีรายารอยู่แล้ว")
+          setClickBoolean(false)
+        }
       })
-        .then(respose => {
-          console.log({ respose })
-          // setIdAcc("")
-          setNameT("")
-          setC(0)
-          setCN("")
-        })
-        .catch(err => {
-          console.log({ err })
-        })
     } else {
-      alert("Not ...")
+      alert("ใส่ข้อมูลให้ครบ")
+      setClickBoolean(false)
     }
   }
   return (
-    <div className="col-12 col-md-8" style={{ margin: "auto" }}>
-      <form onSubmit={submitAcc} className="border-off-form">
+    <div className="col-12 col-md-8 " style={{ margin: "auto" }}>
+      <form onSubmit={submitAcc} className="bk_acc">
         <div className="md-form">
-          <label className="font_white"> เลขที่บัญชี </label>
+          <label className="font_black"> เลขที่บัญชี </label>
           <input
             className="form-control"
-            type="text"
+            type="number"
             value={idAcc}
+            placeholder="เลขที่บัญชี"
             onChange={e => setIdAcc(e.target.value)}
           />
         </div>
         <div className="md-form">
-          <label className="font_white"> ชื่อบัญชี </label>
+          <label className="font_black"> ชื่อบัญชี </label>
           <input
             className="form-control"
             type="text"
             value={nameType}
+            placeholder="ชื่อบัญชี"
             onChange={e => setNameT(e.target.value)}
           />
         </div>
         <div className="md-form">
-          <label className="font_white"> หมวด </label>
+          <label className="font_black"> หมวด </label>
           <input
             className="form-control"
-            type="text"
+            type="number"
             value={id_catgory}
             onChange={e => setC(e.target.value)}
           />
+          <small className="font_black"> * รหัสหมวดหมู่มีชนิดเป็นตัวเลข </small>
         </div>
         <div className="md-form">
-          <label className="font_white"> ชื่อหมวด </label>
+          <label className="font_black"> ชื่อหมวด </label>
           <input
             className="form-control"
             type="text"
             value={categoryName}
+            placeholder="ชื่อหมวด"
             onChange={e => setCN(e.target.value)}
           />
         </div>
         <div className="mt-3">
-          <button type="submit" className="btn btn-block btn-primary">
-            Add new Category
+          <button
+            disabled={clickBoolean}
+            type="submit"
+            className="btn btn-block btn-primary"
+          >
+            {clickBoolean ? "Clicked..." : "Add new Category"}
           </button>
         </div>
       </form>
+      <div className="mt-5" style={{ overflow: "auto", height: "300px" }}>
+        <ShowBillType tableType={tableType} setTbType={setTbType} />
+      </div>
     </div>
+  )
+}
+const ShowBillType = ({ tableType, setTbType }) => {
+  useEffect(() => {
+    getAccType()
+      .then(d => {
+        const { data } = d.data
+        setTbType(data)
+      })
+      .catch(e => {
+        window.location.href = "/#/error"
+      })
+  }, [])
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          <th> เลขที่บัญชี </th>
+          <th> ชื่อบัญชี </th>
+          <th> รหัสหมวดหมู่ </th>
+          <th> ชื่อหมวดหมู่ </th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableType.map((d, i) => (
+          <tr key={i}>
+            <td className="font_white"> {d.id} </td>
+            <td className="font_white"> {d.name_type} </td>
+            <td className="font_white"> {d.id_category} </td>
+            <td className="font_white"> {d.category} </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   )
 }
