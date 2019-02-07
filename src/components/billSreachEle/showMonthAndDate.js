@@ -109,9 +109,9 @@ export const ShowMonthAndDate = () => {
           ""
         )}
       </div>
-      <div>
+      <div className="p-3" style={{ overflow: "auto", height: "300px" }}>
         {showBillTable.length
-          ? showBillTable.map(d => {
+          ? showBillTable.map((d, index) => {
               const { dataArr, totalCr, totalDr } = d
               const { arrInfo } = dataArr
 
@@ -121,6 +121,9 @@ export const ShowMonthAndDate = () => {
                   totalCr={totalCr}
                   totalDr={totalDr}
                   dataInfo={arrInfo}
+                  index={index}
+                  showBillTable={showBillTable}
+                  setBillTable={setBillTable}
                 />
               )
             })
@@ -136,19 +139,29 @@ const dateHandler = dateIs => {
   )}-${dateN.getFullYear()}`
   return dateForMat
 }
-const TableBillSreach = ({ dataArr, totalCr, totalDr, dataInfo }) => {
-  function deleteByIdBill(id_bill) {
+const TableBillSreach = ({
+  dataArr,
+  totalCr,
+  totalDr,
+  dataInfo,
+  index,
+  showBillTable,
+  setBillTable
+}) => {
+  function deleteByIdBill(id_bill, index) {
     // alert(id_bill)
     // eslint-disable-next-line
     if (confirm(`ต้องการลบบิลรหัสที่ : ${id_bill} นี้หรือไม่ ?`)) {
       deleteAllOFBill(id_bill).then(dataM => {
         const { message } = dataM.data
         alert(message)
+        showBillTable.splice(index, 1)
+        setBillTable(showBillTable)
       })
     }
   }
   return (
-    <div className="p-3" style={{ overflow: "auto", height: "300px" }}>
+    <div className="mt-3 mb-3">
       <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
       <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
 
@@ -210,7 +223,7 @@ const TableBillSreach = ({ dataArr, totalCr, totalDr, dataInfo }) => {
       </h5>
       <button
         className="btn btn-danger"
-        onClick={e => deleteByIdBill(dataArr.id_bill)}
+        onClick={e => deleteByIdBill(dataArr.id_bill, index)}
         style={{ cursor: "pointer" }}
       >
         {" "}

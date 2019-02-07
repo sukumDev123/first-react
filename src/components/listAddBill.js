@@ -21,7 +21,7 @@ export const List = ({ list, state, dispatch }) => {
     if (confirm("ต้องการบันทึกจริงๆใช่ไหม ?")) {
       console.log({ state })
 
-      if (id_bill && dateIs && accArr.length && id_doc) {
+      if (id_bill && dateIs && accArr.length) {
         // console.log({ state })
         const totalDr = accArr.reduce((sum, data) => sum + parseInt(data.dr), 0)
         const totalCr = accArr.reduce((sum, data) => sum + parseInt(data.cr), 0)
@@ -45,7 +45,8 @@ export const List = ({ list, state, dispatch }) => {
             })
             .catch(e => {
               console.log({ e })
-              alert("เกิดข้อผิดพลาดทางระบบ.")
+              const { message } = e.response.data
+              alert(message ? message : "Server Error")
               setBtnClick(false)
             })
         } else {

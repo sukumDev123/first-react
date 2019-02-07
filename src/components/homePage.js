@@ -17,11 +17,11 @@ export const HomePage = () => {
         </Link>
       </button>
       <button className="btn btn-secondary ml-2">
-        {" "}
         <Link className="nav-link font_white " to="/home/testCase">
           งบทดลองทั้งหมด
         </Link>
       </button>
+
       <BillListShow />
 
       {/* <div>{showBill ?  : ""}</div>

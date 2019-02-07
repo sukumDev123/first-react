@@ -23,6 +23,7 @@ const dataHandlerFunc = (tempArr, data) =>
 
 const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
   useEffect(() => {
+    console.log(2)
     billAll()
       .then(res => {
         // console.log(data)
@@ -38,6 +39,7 @@ const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
         document.getElementById("loadding_bk").style.display = "none"
 
         setsreachYA(yearSreach)
+
         setTempArr(result)
         setTempArrReadO(result)
       })
@@ -73,28 +75,33 @@ const sreahFindYear = (
 ) => {
   useEffect(
     () => {
-      const dataHandler = tempArr.filter(
-        d => new Date(d.date_is).getFullYear() === parseInt(sreachYear)
-      )
-      const typeEact = dataHandler
-        .map(d => parseInt(d.id))
-        .sort()
-        .filter((item, index, l) => l.indexOf(item) === index)
+      if (sreachYear) {
+        const dataHandler = tempArr.filter(
+          d => new Date(d.date_is).getFullYear() === parseInt(sreachYear)
+        )
+        console.log(3)
 
-      const setMonth = new SreactData().findUniQMonth(dataHandler)
-      const setData = dataHandlerFunc(typeEact, dataHandler)
-      /** ----- */
-      calCrAndDrTotalAndNow(
-        setTotalCr,
-        setTotalDr,
-        setTotalCrNow,
-        setTotalDrNow,
-        dataHandler
-      )
-      /** ----- */
-      setsreachMA(setMonth)
-      setDataCate(setData)
-      setTempArr(dataHandler)
+        console.log({ dataHandler })
+        const typeEact = dataHandler
+          .map(d => parseInt(d.id))
+          .sort()
+          .filter((item, index, l) => l.indexOf(item) === index)
+
+        const setMonth = new SreactData().findUniQMonth(dataHandler)
+        const setData = dataHandlerFunc(typeEact, dataHandler)
+        /** ----- */
+        calCrAndDrTotalAndNow(
+          setTotalCr,
+          setTotalDr,
+          setTotalCrNow,
+          setTotalDrNow,
+          dataHandler
+        )
+        /** ----- */
+        setsreachMA(setMonth)
+        setDataCate(setData)
+        setTempArr(dataHandler)
+      }
     },
     [sreachYear]
   )
@@ -110,46 +117,57 @@ const sreachFindMonth = (
 ) => {
   useEffect(
     () => {
-      const dataHandler = tempArr.filter(
-        d =>
-          new SreactData().filterMonth(new Date(d.date_is).getMonth()) ===
-          sreachM
-      )
-      const typeEact = dataHandler
-        .map(d => parseInt(d.id))
-        .sort()
-        .filter((item, index, l) => l.indexOf(item) === index)
-      const setData = dataHandlerFunc(typeEact, dataHandler)
-      /** ----- */
-      calCrAndDrTotalAndNow(
-        setTotalCr,
-        setTotalDr,
-        setTotalCrNow,
-        setTotalDrNow,
-        dataHandler
-      )
-      /** ----- */
-      setDataCate(setData)
+      if (sreachM) {
+        const dataHandler = tempArr.filter(
+          d =>
+            new SreactData().filterMonth(new Date(d.date_is).getMonth()) ===
+            sreachM
+        )
+        console.log(4)
+
+        const typeEact = dataHandler
+          .map(d => parseInt(d.id))
+          .sort()
+          .filter((item, index, l) => l.indexOf(item) === index)
+        const setData = dataHandlerFunc(typeEact, dataHandler)
+        /** ----- */
+        calCrAndDrTotalAndNow(
+          setTotalCr,
+          setTotalDr,
+          setTotalCrNow,
+          setTotalDrNow,
+          dataHandler
+        )
+        /** ----- */
+        setDataCate(setData)
+      }
     },
     [sreachM]
   )
 }
-const setFindTestCase = (typeSeleted, setTempArr, tempArrReadO) => {
+const setFindTestCase = (
+  typeSeleted,
+  setTempArr,
+  tempArrReadO,
+  setsreachY,
+  setsreachM,
+  tempArr
+) => {
   useEffect(
     () => {
-      console.log("start", typeSeleted, typeof typeSeleted)
-      if (typeSeleted === "all") {
-        // const hanlerData = tempArr.filter(d => parseInt(d.id) )
-        setTempArr(tempArrReadO)
-        console.log({ tempArrReadO })
-      } else if (typeSeleted === "1") {
+      // console.log("start 1", typeSeleted, typeof typeSeleted)
+      setsreachY(0)
+      setsreachM(0)
+      setTempArr(tempArrReadO)
+      // console.log({ tempArr })
+      if (typeSeleted === "1") {
         const hanlerData = tempArrReadO.filter(d => {
           const id_type = parseInt(d.id)
           return 100 <= id_type && id_type <= 399
         })
-        console.log({ hanlerData })
+        // console.log({ hanlerData })
 
-        // setTempArr(hanlerData)
+        setTempArr(hanlerData)
       } else if (typeSeleted === "2") {
         const hanlerData = tempArrReadO.filter(d => {
           const id_type = parseInt(d.id)
@@ -162,7 +180,22 @@ const setFindTestCase = (typeSeleted, setTempArr, tempArrReadO) => {
     [typeSeleted]
   )
 }
-export const CateShowList = () => {
+const handlerStringTital = type => {
+  switch (type) {
+    case "all": {
+      return "แสดงรายการทั้งหมด"
+    }
+    case "1": {
+      return "แสดงรายการ 100-399"
+    }
+    case "2": {
+      return "แสดงรายการ 400-500"
+    }
+    default:
+      return "error"
+  }
+}
+export const CateShowList = ({ typeSeleted }) => {
   const [dataCate, setDataCate] = useState([])
   const [tempArr, setTempArr] = useState([])
   const [tempArrReadO, setTempArrReadO] = useState([])
@@ -170,17 +203,22 @@ export const CateShowList = () => {
   const [sreachYA, setsreachYA] = useState([])
   const [sreachM, setsreachM] = useState(0)
   const [sreachYear, setsreachY] = useState(0)
-  const sreachType = [
-    { i: "all", v: "ทั้งหมด" },
-    { i: "1", v: "หมวด 100-399" },
-    { i: "2", v: "หมวด 400-500" }
-  ]
-  const [typeSeleted, setTypeSelete] = useState("0")
+
   const [canClicked, setCanClick] = useState(false)
   const [totalCrPlus, setTotalCr] = useState(0)
   const [totalDrPlus, setTotalDr] = useState(0)
   const [totalCrNow, setTotalCrNow] = useState(0)
   const [totalDrNow, setTotalDrNow] = useState(0)
+  const title = handlerStringTital(typeSeleted)
+  setFindTestCase(
+    typeSeleted,
+    setTempArr,
+    tempArrReadO,
+    setsreachY,
+    setsreachM,
+    tempArr
+  )
+
   getApiOfBill(setsreachYA, setTempArr, setTempArrReadO)
   sreahFindYear(
     setTotalCr,
@@ -202,51 +240,27 @@ export const CateShowList = () => {
     sreachM,
     tempArr
   )
-  setFindTestCase(typeSeleted, setTempArr, tempArrReadO)
 
   return (
     <div style={{ padding: "20px" }}>
       <Loadding />
-      <h5 className="font_white"> ค้นหางบทดลอง </h5>
+      <h5 className="font_white"> ค้นหางบทดลอง {title} </h5>
 
       <div className="p-3">
-        <label className="font_white">เลือกแสดงงบทดลอง</label>
+        <label className="font_white">เลือกปีที่ต้องการแสดง</label>
         <select
           className="form-control"
-          value={typeSeleted}
-          disabled={canClicked}
-          onChange={e => {
-            setCanClick(true)
-            setTypeSelete(e.target.value)
-          }}
+          value={sreachYear}
+          onChange={e => setsreachY(e.target.value)}
         >
-          <option value="0"> Sreach </option>
-          {sreachType.map((d, i) => (
-            <option key={i} value={d.i}>
-              {d.v}
+          <option>เลือกปีที่ต้องการแสดง</option>
+          {sreachYA.map((d, i) => (
+            <option key={i} value={d}>
+              {d}
             </option>
           ))}
         </select>
       </div>
-      {canClicked === true ? (
-        <div className="p-3">
-          <label className="font_white">เลือกปีที่ต้องการแสดง</label>
-          <select
-            className="form-control"
-            value={sreachYear}
-            onChange={e => setsreachY(e.target.value)}
-          >
-            <option>เลือกปีที่ต้องการแสดง</option>
-            {sreachYA.map((d, i) => (
-              <option key={i} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-      ) : (
-        ""
-      )}
       {sreachMA.length ? (
         <div className="p-3">
           <label className="font_white">Sreach Year</label>
@@ -381,7 +395,6 @@ export const CateShowList = () => {
             onClick={e => {
               setDataCate([])
               setCanClick(false)
-              setTypeSelete("")
             }}
             className="btn btn-primary"
           >
