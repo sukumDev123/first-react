@@ -151,7 +151,8 @@ const setFindTestCase = (
   tempArrReadO,
   setsreachY,
   setsreachM,
-  tempArr
+  setDataCate,
+  setsreachMA
 ) => {
   useEffect(
     () => {
@@ -159,7 +160,8 @@ const setFindTestCase = (
       setsreachY(0)
       setsreachM(0)
       setTempArr(tempArrReadO)
-      // console.log({ tempArr })
+      setDataCate([])
+      setsreachMA([])
       if (typeSeleted === "1") {
         const hanlerData = tempArrReadO.filter(d => {
           const id_type = parseInt(d.id)
@@ -183,13 +185,13 @@ const setFindTestCase = (
 const handlerStringTital = type => {
   switch (type) {
     case "all": {
-      return "แสดงรายการทั้งหมด"
+      return "งบทดลองก่อนปิด"
     }
     case "1": {
-      return "แสดงรายการ 100-399"
+      return "งบทดลองหลังปิด"
     }
     case "2": {
-      return "แสดงรายการ 400-500"
+      return "งบกำไรขาดทุน"
     }
     default:
       return "error"
@@ -216,7 +218,8 @@ export const CateShowList = ({ typeSeleted }) => {
     tempArrReadO,
     setsreachY,
     setsreachM,
-    tempArr
+    setDataCate,
+    setsreachMA
   )
 
   getApiOfBill(setsreachYA, setTempArr, setTempArrReadO)
@@ -263,7 +266,7 @@ export const CateShowList = ({ typeSeleted }) => {
       </div>
       {sreachMA.length ? (
         <div className="p-3">
-          <label className="font_white">Sreach Year</label>
+          <label className="font_white">ค้นหาจากเดือน</label>
           <select
             className="form-control"
             value={sreachM}
@@ -290,7 +293,7 @@ export const CateShowList = ({ typeSeleted }) => {
                   <th> เครดิต </th>
                   <th> เดบิต </th>
                   <th> เหลือเครดิต </th>
-                  <th> เหบือเดบิต </th>
+                  <th> เหลือเดบิต </th>
 
                   {/* <th> ลบ </th>  */}
                 </tr>

@@ -15,3 +15,8 @@ export const deleteAllOFBill = id_bill =>
 
 export const deleteAccType = id_acc =>
   axios.delete(`${host_api}/api/acc/deleteAcc?id_acc=${id_acc}`)
+
+export const updateDataBill = (id_bill, dataBill) =>
+  axios.put(`${host_api}/api/acc/edit/bill?id_bill=${id_bill}`, dataBill)
+export const addOneBill = data =>
+  axios.post(`${host_api}/api/acc/add/oneBillData`, data)

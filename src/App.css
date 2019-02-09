@@ -145,3 +145,18 @@ table tbody tr:hover {
   box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.2);
   padding: 20px;
 }
+.showEditBk {
+  position: fixed;
+  background: white;
+  top: 10%;
+  left: 2%;
+  width: 96%;
+  height: 70%;
+  border-radius: 6px;
+  box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+}
+.showEdit {
+  overflow: auto;
+  height: 400px;
+}

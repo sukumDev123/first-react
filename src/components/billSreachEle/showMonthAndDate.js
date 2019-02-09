@@ -4,15 +4,8 @@ import { SreactData } from "../../logic/sreactData"
 import NumberFormat from "react-number-format"
 
 import { Loadding } from "../../App"
-export const ShowMonthAndDate = () => {
-  const [dataBill, setDataBill] = useState([])
-  const [monthUni, setMonthUni] = useState([])
-  const [monthUniSelected, setMUS] = useState("0")
-  const [yearUniSeleted, setYUS] = useState("0")
-  const [yearArr, setYearArr] = useState([])
-  const [showBillTable, setBillTable] = useState([])
-  const sreactData = new SreactData()
-  const [tempArr, setTempArr] = useState([])
+import { ShowEditBill } from "./editBillData"
+const getBillData = (setYearArr, setTempArr, sreactData) => {
   useEffect(() => {
     billAll()
       .then(res => {
@@ -32,6 +25,14 @@ export const ShowMonthAndDate = () => {
         window.location.href = "/#/error"
       })
   }, [])
+}
+const sreachYearData = (
+  setMonthUni,
+  setDataBill,
+  tempArr,
+  sreactData,
+  yearUniSeleted
+) => {
   useEffect(
     () => {
       const zipBill_id = tempArr
@@ -57,7 +58,8 @@ export const ShowMonthAndDate = () => {
     },
     [yearUniSeleted]
   )
-
+}
+const sreachMonth = (setBillTable, sreactData, dataBill, monthUniSelected) => {
   useEffect(
     () => {
       const sreachDataFromMonth = sreactData
@@ -70,6 +72,21 @@ export const ShowMonthAndDate = () => {
     },
     [monthUniSelected]
   )
+}
+export const ShowMonthAndDate = () => {
+  const [dataBill, setDataBill] = useState([])
+  const [monthUni, setMonthUni] = useState([])
+  const [monthUniSelected, setMUS] = useState("0")
+  const [yearUniSeleted, setYUS] = useState("0")
+  const [yearArr, setYearArr] = useState([])
+  const [showBillTable, setBillTable] = useState([])
+  const sreactData = new SreactData()
+  const [tempArr, setTempArr] = useState([])
+
+  const [editData, setEditData] = useState([])
+  getBillData(setYearArr, setTempArr, sreactData)
+  sreachYearData(setMonthUni, setDataBill, tempArr, sreactData, yearUniSeleted)
+  sreachMonth(setBillTable, sreactData, dataBill, monthUniSelected)
   return (
     <div className="bkShow_Fixed">
       <Loadding />
@@ -117,6 +134,7 @@ export const ShowMonthAndDate = () => {
 
               return (
                 <TableBillSreach
+                  key={index}
                   dataArr={dataArr}
                   totalCr={totalCr}
                   totalDr={totalDr}
@@ -124,21 +142,28 @@ export const ShowMonthAndDate = () => {
                   index={index}
                   showBillTable={showBillTable}
                   setBillTable={setBillTable}
+                  setEditData={setEditData}
                 />
               )
             })
           : ""}
       </div>
+      {editData.length ? (
+        <ShowEditBill editData={editData} setDataForm={setEditData} />
+      ) : (
+        ""
+      )}
     </div>
   )
 }
-const dateHandler = dateIs => {
+export const dateHandler = dateIs => {
   const dateN = new Date(dateIs)
   const dateForMat = `${dateN.getDate()}-${new SreactData().filterMonth(
     dateN.getMonth()
   )}-${dateN.getFullYear()}`
   return dateForMat
 }
+
 const TableBillSreach = ({
   dataArr,
   totalCr,
@@ -146,7 +171,8 @@ const TableBillSreach = ({
   dataInfo,
   index,
   showBillTable,
-  setBillTable
+  setBillTable,
+  setEditData
 }) => {
   function deleteByIdBill(id_bill, index) {
     // alert(id_bill)
@@ -161,7 +187,7 @@ const TableBillSreach = ({
     }
   }
   return (
-    <div className="mt-3 mb-3">
+    <div className="mt-3 mb-3" key={index}>
       <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
       <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
 
@@ -226,8 +252,14 @@ const TableBillSreach = ({
         onClick={e => deleteByIdBill(dataArr.id_bill, index)}
         style={{ cursor: "pointer" }}
       >
-        {" "}
-        ลบบิลที่ ​: {dataArr.id_bill}{" "}
+        ลบบิลที่ ​: {dataArr.id_bill}
+      </button>
+      <button
+        className="btn btn-secondary"
+        onClick={e => setEditData([dataArr])}
+        style={{ cursor: "pointer" }}
+      >
+        แก้ไข ​: {dataArr.id_bill}
       </button>
     </div>
   )

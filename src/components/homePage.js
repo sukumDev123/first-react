@@ -18,7 +18,7 @@ export const HomePage = () => {
       </button>
       <button className="btn btn-secondary ml-2">
         <Link className="nav-link font_white " to="/home/testCase">
-          งบทดลองทั้งหมด
+        รายงานการเงิน
         </Link>
       </button>
 

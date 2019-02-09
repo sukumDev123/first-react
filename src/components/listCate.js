@@ -20,7 +20,7 @@ export const ListCate = () => {
         }}
         className={classNameString[0]}
       >
-        แสดงทั้งหมด
+        งบทดลองก่อนปิด
       </strong>
       <strong
         style={{ cursor: "pointer", marginLeft: "10px" }}
@@ -31,7 +31,7 @@ export const ListCate = () => {
         }}
         className={classNameString[1]}
       >
-        แสดงแค่หมวด 100-399
+        งบทดลองหลังปิด
       </strong>
       <strong
         style={{ cursor: "pointer", marginLeft: "10px" }}
@@ -42,7 +42,7 @@ export const ListCate = () => {
         }}
         className={classNameString[2]}
       >
-        แสดงแค่หมวด 400-599
+        งบกำไรขาดทุน
       </strong>
       {showCate(btnC)}
     </div>
