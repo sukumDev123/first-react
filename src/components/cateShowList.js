@@ -4,8 +4,8 @@ import NumberFormat from "react-number-format"
 import { SreactData } from "../logic/sreactData"
 import { Link } from "react-router-dom"
 import { Loadding } from "../App"
-const dataHandlerFunc = (tempArr, data) =>
-  tempArr.map(id_type => {
+const dataHandlerFunc = (typeAcc, data) => {
+  return typeAcc.map(id_type => {
     const dataDo = data.filter(d => d.id == id_type)
     const drTotal = dataDo.reduce((sum, d) => sum + parseInt(d.dr), 0)
     const crTotal = dataDo.reduce((sum, d) => sum + parseInt(d.cr), 0)
@@ -20,10 +20,10 @@ const dataHandlerFunc = (tempArr, data) =>
       drNow
     }
   })
+}
 
 const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
   useEffect(() => {
-    console.log(2)
     billAll()
       .then(res => {
         // console.log(data)
@@ -46,32 +46,22 @@ const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
       .catch(e => (window.location.href = "/#/error"))
   }, [])
 }
-const calCrAndDrTotalAndNow = (
-  setTotalCr,
-  setTotalDr,
-  setTotalCrNow,
-  setTotalDrNow,
-  dataHandler
-) => {
+const calCrAndDrTotalAndNow = (setTotalCr, setTotalDr, dataHandler) => {
   const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
   const totalDrCal = dataHandler.reduce((sum, data) => sum + data.dr, 0)
-  const totalCrNowC = totalCrCal - totalDrCal < 0 ? 0 : totalCrCal - totalDrCal
-  const totalDrNowC = totalDrCal - totalCrCal < 0 ? 0 : totalDrCal - totalCrCal
+
   setTotalCr(totalCrCal)
   setTotalDr(totalDrCal)
-  setTotalCrNow(totalCrNowC)
-  setTotalDrNow(totalDrNowC)
 }
 const sreahFindYear = (
   setTotalCr,
   setTotalDr,
-  setTotalCrNow,
-  setTotalDrNow,
   setsreachMA,
   setDataCate,
   setTempArr,
   sreachYear,
-  tempArr
+  tempArr,
+  setNowArrCrDr
 ) => {
   useEffect(
     () => {
@@ -79,24 +69,20 @@ const sreahFindYear = (
         const dataHandler = tempArr.filter(
           d => new Date(d.date_is).getFullYear() === parseInt(sreachYear)
         )
-        console.log(3)
-
-        console.log({ dataHandler })
         const typeEact = dataHandler
           .map(d => parseInt(d.id))
           .sort()
           .filter((item, index, l) => l.indexOf(item) === index)
-
         const setMonth = new SreactData().findUniQMonth(dataHandler)
         const setData = dataHandlerFunc(typeEact, dataHandler)
+        const controlCr = setData.reduce((sum, d) => sum + d.crNow, 0)
+        const controlDr = setData.reduce((sum, d) => sum + d.drNow, 0)
+        setNowArrCrDr({
+          crNow: controlCr,
+          drNow: controlDr
+        })
         /** ----- */
-        calCrAndDrTotalAndNow(
-          setTotalCr,
-          setTotalDr,
-          setTotalCrNow,
-          setTotalDrNow,
-          dataHandler
-        )
+        calCrAndDrTotalAndNow(setTotalCr, setTotalDr, dataHandler)
         /** ----- */
         setsreachMA(setMonth)
         setDataCate(setData)
@@ -109,11 +95,10 @@ const sreahFindYear = (
 const sreachFindMonth = (
   setTotalCr,
   setTotalDr,
-  setTotalCrNow,
-  setTotalDrNow,
   setDataCate,
   sreachM,
-  tempArr
+  tempArr,
+  setNowArrCrDr
 ) => {
   useEffect(
     () => {
@@ -123,21 +108,20 @@ const sreachFindMonth = (
             new SreactData().filterMonth(new Date(d.date_is).getMonth()) ===
             sreachM
         )
-        console.log(4)
 
         const typeEact = dataHandler
           .map(d => parseInt(d.id))
           .sort()
           .filter((item, index, l) => l.indexOf(item) === index)
         const setData = dataHandlerFunc(typeEact, dataHandler)
+        const controlCr = setData.reduce((sum, d) => sum + d.crNow, 0)
+        const controlDr = setData.reduce((sum, d) => sum + d.drNow, 0)
+        setNowArrCrDr({
+          crNow: controlCr,
+          drNow: controlDr
+        })
         /** ----- */
-        calCrAndDrTotalAndNow(
-          setTotalCr,
-          setTotalDr,
-          setTotalCrNow,
-          setTotalDrNow,
-          dataHandler
-        )
+        calCrAndDrTotalAndNow(setTotalCr, setTotalDr, dataHandler)
         /** ----- */
         setDataCate(setData)
       }
@@ -156,7 +140,6 @@ const setFindTestCase = (
 ) => {
   useEffect(
     () => {
-      // console.log("start 1", typeSeleted, typeof typeSeleted)
       setsreachY(0)
       setsreachM(0)
       setTempArr(tempArrReadO)
@@ -167,7 +150,6 @@ const setFindTestCase = (
           const id_type = parseInt(d.id)
           return 100 <= id_type && id_type <= 399
         })
-        // console.log({ hanlerData })
 
         setTempArr(hanlerData)
       } else if (typeSeleted === "2") {
@@ -175,7 +157,6 @@ const setFindTestCase = (
           const id_type = parseInt(d.id)
           return 400 <= id_type && id_type <= 599
         })
-        // console.log({ hanlerData })
         setTempArr(hanlerData)
       }
     },
@@ -205,13 +186,16 @@ export const CateShowList = ({ typeSeleted }) => {
   const [sreachYA, setsreachYA] = useState([])
   const [sreachM, setsreachM] = useState(0)
   const [sreachYear, setsreachY] = useState(0)
-
+  const [nowArrCrDr, setNowArrCrDr] = useState({
+    crNow: 0,
+    drNow: 0
+  })
   const [canClicked, setCanClick] = useState(false)
   const [totalCrPlus, setTotalCr] = useState(0)
   const [totalDrPlus, setTotalDr] = useState(0)
-  const [totalCrNow, setTotalCrNow] = useState(0)
-  const [totalDrNow, setTotalDrNow] = useState(0)
+
   const title = handlerStringTital(typeSeleted)
+
   setFindTestCase(
     typeSeleted,
     setTempArr,
@@ -226,22 +210,20 @@ export const CateShowList = ({ typeSeleted }) => {
   sreahFindYear(
     setTotalCr,
     setTotalDr,
-    setTotalCrNow,
-    setTotalDrNow,
     setsreachMA,
     setDataCate,
     setTempArr,
     sreachYear,
-    tempArr
+    tempArr,
+    setNowArrCrDr
   )
   sreachFindMonth(
     setTotalCr,
     setTotalDr,
-    setTotalCrNow,
-    setTotalDrNow,
     setDataCate,
     sreachM,
-    tempArr
+    tempArr,
+    setNowArrCrDr
   )
 
   return (
@@ -362,12 +344,11 @@ export const CateShowList = ({ typeSeleted }) => {
                   prefix={"฿"}
                 />{" "}
               </h5>
-
               <h5 className="font_white">
                 {" "}
-                ยอดคงเหลือเคดริต :{" "}
+                ยอดคงเหลือเคบิต :{" "}
                 <NumberFormat
-                  value={totalCrNow}
+                  value={nowArrCrDr.drNow}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"฿"}
@@ -375,9 +356,9 @@ export const CateShowList = ({ typeSeleted }) => {
               </h5>
               <h5 className="font_white">
                 {" "}
-                ยอดคงเหลือเคดริต :{" "}
+                ยอดคงเหลือเครดิตซ:{" "}
                 <NumberFormat
-                  value={totalDrNow}
+                  value={nowArrCrDr.crNow}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"฿"}
