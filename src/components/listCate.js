@@ -8,6 +8,7 @@ export const ListCate = () => {
   const [classNameString, setClassNameString] = useState([
     "btn btn-primary",
     "font_white",
+    "font_white",
     "font_white"
   ])
   return (
@@ -16,33 +17,64 @@ export const ListCate = () => {
         style={{ cursor: "pointer", marginLeft: "10px" }}
         onClick={e => {
           setBtnC("all")
-          setClassNameString(["btn btn-primary", "font_white", "font_white"])
+          setClassNameString([
+            "btn btn-primary",
+            "font_white",
+            "font_white",
+            "font_white"
+          ])
         }}
         className={classNameString[0]}
       >
-        งบทดลองก่อนปิด
+        งบทดลองก่อนปิดบัญชี
       </strong>
       <strong
         style={{ cursor: "pointer", marginLeft: "10px" }}
         onClick={e => {
-          setClassNameString(["font_white", "btn btn-primary", "font_white"])
+          setClassNameString([
+            "font_white",
+            "btn btn-primary",
+            "font_white",
+            "font_white"
+          ])
 
           setBtnC("1")
         }}
         className={classNameString[1]}
       >
-        งบทดลองหลังปิด
+        งบทดลองหลังปิดบัญชี
       </strong>
       <strong
         style={{ cursor: "pointer", marginLeft: "10px" }}
         onClick={e => {
-          setClassNameString(["font_white", "font_white", "btn btn-primary"])
+          setClassNameString([
+            "font_white",
+            "font_white",
+            "btn btn-primary",
+            "font_white"
+          ])
 
           setBtnC("2")
         }}
         className={classNameString[2]}
       >
         งบกำไรขาดทุน
+      </strong>
+      <strong
+        style={{ cursor: "pointer", marginLeft: "10px" }}
+        onClick={e => {
+          setClassNameString([
+            "font_white",
+            "font_white",
+            "font_white",
+            "btn btn-primary"
+          ])
+
+          setBtnC("1")
+        }}
+        className={classNameString[3]}
+      >
+        งบแสดงฐานะการเงิน
       </strong>
       {showCate(btnC)}
     </div>

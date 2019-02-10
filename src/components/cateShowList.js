@@ -39,7 +39,6 @@ const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
         document.getElementById("loadding_bk").style.display = "none"
 
         setsreachYA(yearSreach)
-
         setTempArr(result)
         setTempArrReadO(result)
       })
@@ -49,9 +48,21 @@ const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
 const calCrAndDrTotalAndNow = (setTotalCr, setTotalDr, dataHandler) => {
   const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
   const totalDrCal = dataHandler.reduce((sum, data) => sum + data.dr, 0)
-
   setTotalCr(totalCrCal)
   setTotalDr(totalDrCal)
+}
+const calNowCr = (typeSeleted, setNowArrCrDr, controlCr, controlDr) => {
+  if (typeSeleted === "1") {
+    setNowArrCrDr({
+      crNow: controlCr - controlDr > 0 ? controlCr - controlDr : 0,
+      drNow: controlDr - controlCr > 0 ? controlDr - controlCr : 0
+    })
+  } else {
+    setNowArrCrDr({
+      crNow: controlCr,
+      drNow: controlDr
+    })
+  }
 }
 const sreahFindYear = (
   setTotalCr,
@@ -61,7 +72,8 @@ const sreahFindYear = (
   setTempArr,
   sreachYear,
   tempArr,
-  setNowArrCrDr
+  setNowArrCrDr,
+  typeSeleted
 ) => {
   useEffect(
     () => {
@@ -77,10 +89,8 @@ const sreahFindYear = (
         const setData = dataHandlerFunc(typeEact, dataHandler)
         const controlCr = setData.reduce((sum, d) => sum + d.crNow, 0)
         const controlDr = setData.reduce((sum, d) => sum + d.drNow, 0)
-        setNowArrCrDr({
-          crNow: controlCr,
-          drNow: controlDr
-        })
+        calNowCr(typeSeleted, setNowArrCrDr, controlCr, controlDr)
+
         /** ----- */
         calCrAndDrTotalAndNow(setTotalCr, setTotalDr, dataHandler)
         /** ----- */
@@ -92,13 +102,15 @@ const sreahFindYear = (
     [sreachYear]
   )
 }
+
 const sreachFindMonth = (
   setTotalCr,
   setTotalDr,
   setDataCate,
   sreachM,
   tempArr,
-  setNowArrCrDr
+  setNowArrCrDr,
+  typeSeleted
 ) => {
   useEffect(
     () => {
@@ -116,10 +128,7 @@ const sreachFindMonth = (
         const setData = dataHandlerFunc(typeEact, dataHandler)
         const controlCr = setData.reduce((sum, d) => sum + d.crNow, 0)
         const controlDr = setData.reduce((sum, d) => sum + d.drNow, 0)
-        setNowArrCrDr({
-          crNow: controlCr,
-          drNow: controlDr
-        })
+        calNowCr(typeSeleted, setNowArrCrDr, controlCr, controlDr)
         /** ----- */
         calCrAndDrTotalAndNow(setTotalCr, setTotalDr, dataHandler)
         /** ----- */
@@ -215,7 +224,8 @@ export const CateShowList = ({ typeSeleted }) => {
     setTempArr,
     sreachYear,
     tempArr,
-    setNowArrCrDr
+    setNowArrCrDr,
+    typeSeleted
   )
   sreachFindMonth(
     setTotalCr,
@@ -223,7 +233,8 @@ export const CateShowList = ({ typeSeleted }) => {
     setDataCate,
     sreachM,
     tempArr,
-    setNowArrCrDr
+    setNowArrCrDr,
+    typeSeleted
   )
 
   return (
