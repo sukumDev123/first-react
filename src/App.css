@@ -6,7 +6,9 @@
   animation: App-logo-spin infinite 20s linear;
   height: 40vmin;
 }
-
+.font_p {
+  color: rgb(0, 0, 0);
+}
 .font_white {
   color: rgb(250, 250, 250);
   font-weight: bold;
@@ -38,6 +40,10 @@ table tr td {
 table tbody tr:hover {
   background: #ffffff;
   /* color: black; */
+}
+.table_now tbody tr td {
+  background: white;
+  color: black;
 }
 .App-header {
   background-color: #282c34;
@@ -159,4 +165,13 @@ table tbody tr:hover {
 .showEdit {
   overflow: auto;
   height: 400px;
+}
+.bkShowBillReal {
+  background: white;
+  position: fixed;
+  width: 100%;
+  overflow: auto;
+  height: 100%;
+  top: 0;
+  left: 0;
 }

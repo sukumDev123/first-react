@@ -190,8 +190,9 @@ const TableBillSreach = ({
     <div className="mt-3 mb-3" key={index}>
       <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
       <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
-
-      <table className="table">
+      <h4 className="font_white"> รายละเอียด : </h4>
+      <p className="font_white p-3">{dataArr.id_bill}</p>
+      <table className="table_now">
         <thead>
           <tr>
             <th> ชนิด </th>

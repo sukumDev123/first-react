@@ -4,6 +4,7 @@ import NumberFormat from "react-number-format"
 import { SreactData } from "../logic/sreactData"
 import { Link } from "react-router-dom"
 import { Loadding } from "../App"
+
 const dataHandlerFunc = (typeAcc, data) => {
   return typeAcc.map(id_type => {
     const dataDo = data.filter(d => d.id == id_type)
@@ -187,7 +188,15 @@ const handlerStringTital = type => {
       return "error"
   }
 }
+
 export const CateShowList = ({ typeSeleted }) => {
+  const dffS = {
+    dataCate: [],
+    totalCrPlus: 0,
+    totalDrPlus: 0,
+    type: "",
+    status: false
+  }
   const [dataCate, setDataCate] = useState([])
   const [tempArr, setTempArr] = useState([])
   const [tempArrReadO, setTempArrReadO] = useState([])
@@ -202,7 +211,7 @@ export const CateShowList = ({ typeSeleted }) => {
   const [canClicked, setCanClick] = useState(false)
   const [totalCrPlus, setTotalCr] = useState(0)
   const [totalDrPlus, setTotalDr] = useState(0)
-
+  const [showAllBillD, setShowAllBillD] = useState(dffS)
   const title = handlerStringTital(typeSeleted)
 
   setFindTestCase(
@@ -375,6 +384,26 @@ export const CateShowList = ({ typeSeleted }) => {
                   prefix={"฿"}
                 />
               </h5>
+              <div className="md-5">
+                {sreachM ? (
+                  <button
+                    onClick={e => {
+                      setShowAllBillD({
+                        dataCate,
+                        totalCrPlus: nowArrCrDr.crNow,
+                        totalDrPlus: nowArrCrDr.drNow,
+                        type: typeSeleted,
+                        status: true,
+                        title: title
+                      })
+                    }}
+                  >
+                    Export to e
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -399,6 +428,130 @@ export const CateShowList = ({ typeSeleted }) => {
       ) : (
         ""
       )}
+      {showAllBillD.status ? (
+        <ShowDetailTableAll
+          dataShow={showAllBillD}
+          year={sreachYear}
+          month={sreachM}
+        />
+      ) : (
+        ""
+      )}
     </div>
   )
 }
+const ShowDetailTableAll = ({ dataShow, year, month }) => {
+  switch (dataShow.type) {
+    case "all":
+      return <Case1 dataShow={dataShow} year={year} month={month} />
+    case "1":
+      return <Case1 dataShow={dataShow} year={year} month={month} />
+    case "2":
+      return <Case2 dataShow={dataShow} year={year} month={month} />
+    default:
+      return <h1> Show</h1>
+  }
+}
+
+const Case1 = ({ dataShow, year, month }) => {
+  const { dataCate, totalCrPlus, totalDrPlus } = dataShow
+  const drTotal = dataCate.reduce((sum, d) => (sum += parseInt(d.drNow)), 0)
+  const crTotal = dataCate.reduce((sum, d) => (sum += parseInt(d.drNow)), 0)
+
+  console.log(dataCate)
+  const newSh = new SreactData().filterMonthS(month)
+  const forMathData = `${newSh} ${month} ${year}`
+  return (
+    <div className="bkShowBillReal">
+      {/* <h1 className="text-center mb-5 font_p">{title}</h1> */}
+      <HeaderTable date_is={forMathData} />
+      <div className="container mt-4">
+        <table className="table_now table">
+          <thead>
+            <tr>
+              <th>ชื่อบัญชี</th>
+              <th>เลขบัญชี</th>
+              <th>เดบิต</th>
+              <th>เครดิต</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataCate.map((d, i) => {
+              return (
+                <tr key={i}>
+                  <td> {d.name_type} </td>
+                  <td> {d.id_type} </td>
+                  <td>
+                    {" "}
+                    <NumberFormat
+                      value={d.drNow}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"฿"}
+                    />{" "}
+                  </td>
+                  <td>
+                    {" "}
+                    <NumberFormat
+                      value={d.crNow}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                      prefix={"฿"}
+                    />{" "}
+                  </td>
+                </tr>
+              )
+            })}
+            <tr>
+              <td>
+                {" "}
+                <strong>คงเหลือ</strong>{" "}
+              </td>
+              <td />
+              <td>
+                {" "}
+                <strong>
+                  {" "}
+                  <NumberFormat
+                    value={drTotal}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"฿"}
+                  />
+                </strong>{" "}
+              </td>
+              <td>
+                {" "}
+                <strong>
+                  <NumberFormat
+                    value={crTotal}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"฿"}
+                  />
+                </strong>{" "}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+const Case2 = ({ dataShow, year, month }) => {
+  const { dataCate, totalCrPlus, totalDrPlus } = dataShow
+  const newSh = new SreactData().filterMonthS(month)
+  const forMathData = `${newSh} ${month} ${year}`
+  return (
+    <div className="bkShowBillReal">
+      <HeaderTable date_is={forMathData} />
+    </div>
+  )
+}
+const HeaderTable = ({ date_is }) => (
+  <div className="container mt-4">
+    <h1 className="text-center"> Company Name </h1>
+    <h3 className="text-center mt-3"> Company Name ETC. </h3>
+    <h5 className="text-center mt-4"> วันที่ : {date_is} </h5>
+  </div>
+)
