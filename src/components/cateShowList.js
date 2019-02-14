@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { billAll } from "../services/categoryS"
+import { billAll, getAllBIllByOneType } from "../services/categoryS"
 import NumberFormat from "react-number-format"
 import { SreactData } from "../logic/sreactData"
 import { Link } from "react-router-dom"
@@ -8,8 +8,8 @@ import { Loadding } from "../App"
 const dataHandlerFunc = (typeAcc, data) => {
   return typeAcc.map(id_type => {
     const dataDo = data.filter(d => d.id == id_type)
-    const drTotal = dataDo.reduce((sum, d) => sum + parseInt(d.dr), 0)
-    const crTotal = dataDo.reduce((sum, d) => sum + parseInt(d.cr), 0)
+    const drTotal = dataDo.reduce((sum, d) => sum + parseFloat(d.dr), 0)
+    const crTotal = dataDo.reduce((sum, d) => sum + parseFloat(d.cr), 0)
     const crNow = crTotal - drTotal < 0 ? 0 : crTotal - drTotal
     const drNow = drTotal - crTotal < 0 ? 0 : drTotal - crTotal
     return {
@@ -22,29 +22,41 @@ const dataHandlerFunc = (typeAcc, data) => {
     }
   })
 }
+const handlerFuncionCall = typeSeleted => {
+  if (typeSeleted === "all") return getAllBIllByOneType()
+  return billAll()
+}
+const getApiOfBill = (
+  setsreachYA,
+  setTempArr,
+  setTempArrReadO,
+  typeSeleted
+) => {
+  useEffect(
+    () => {
+      document.getElementById("loadding_bk").style.display = "block"
+      handlerFuncionCall(typeSeleted)
+        .then(res => {
+          // console.log(data)
+          const { data } = res.data
+          const result = data.map(d => {
+            return {
+              ...d,
+              date_is: parseInt(d.date_is)
+            }
+          })
+          // console.log(data)
+          const yearSreach = new SreactData(result).findUniQYear()
+          document.getElementById("loadding_bk").style.display = "none"
 
-const getApiOfBill = (setsreachYA, setTempArr, setTempArrReadO) => {
-  useEffect(() => {
-    billAll()
-      .then(res => {
-        // console.log(data)
-        const { data } = res.data
-        const result = data.map(d => {
-          return {
-            ...d,
-            date_is: parseInt(d.date_is)
-          }
+          setsreachYA(yearSreach)
+          setTempArr(result)
+          setTempArrReadO(result)
         })
-        // console.log(data)
-        const yearSreach = new SreactData(result).findUniQYear()
-        document.getElementById("loadding_bk").style.display = "none"
-
-        setsreachYA(yearSreach)
-        setTempArr(result)
-        setTempArrReadO(result)
-      })
-      .catch(e => (window.location.href = "/#/error"))
-  }, [])
+        .catch(e => (window.location.href = "/#/error"))
+    },
+    [typeSeleted]
+  )
 }
 const calCrAndDrTotalAndNow = (setTotalCr, setTotalDr, dataHandler) => {
   const totalCrCal = dataHandler.reduce((sum, data) => sum + data.cr, 0)
@@ -224,7 +236,7 @@ export const CateShowList = ({ typeSeleted }) => {
     setsreachMA
   )
 
-  getApiOfBill(setsreachYA, setTempArr, setTempArrReadO)
+  getApiOfBill(setsreachYA, setTempArr, setTempArrReadO, typeSeleted)
   sreahFindYear(
     setTotalCr,
     setTotalDr,
@@ -292,10 +304,12 @@ export const CateShowList = ({ typeSeleted }) => {
                 <tr>
                   <th> เลขบัญชี </th>
                   <th> ชื่อบัญชี </th>
-                  <th> เครดิต </th>
                   <th> เดบิต </th>
-                  <th> เหลือเครดิต </th>
+
+                  <th> เครดิต </th>
                   <th> เหลือเดบิต </th>
+
+                  <th> เหลือเครดิต </th>
 
                   {/* <th> ลบ </th>  */}
                 </tr>
@@ -307,7 +321,8 @@ export const CateShowList = ({ typeSeleted }) => {
                     <td className="font_white"> {d.name_type}</td>
                     <td className="font_white">
                       <NumberFormat
-                        value={d.crTotal}
+                        value={d.drTotal}
+                        decimalScale={2}
                         displayType={"text"}
                         thousandSeparator={true}
                         prefix={"฿"}
@@ -315,8 +330,20 @@ export const CateShowList = ({ typeSeleted }) => {
                     </td>
                     <td className="font_white">
                       <NumberFormat
-                        value={d.drTotal}
+                        value={d.crTotal}
                         displayType={"text"}
+                        decimalScale={2}
+                        thousandSeparator={true}
+                        prefix={"฿"}
+                      />{" "}
+                    </td>
+
+                    <td className="font_white">
+                      {" "}
+                      <NumberFormat
+                        value={d.drNow}
+                        displayType={"text"}
+                        decimalScale={2}
                         thousandSeparator={true}
                         prefix={"฿"}
                       />{" "}
@@ -325,15 +352,7 @@ export const CateShowList = ({ typeSeleted }) => {
                       {" "}
                       <NumberFormat
                         value={d.crNow}
-                        displayType={"text"}
-                        thousandSeparator={true}
-                        prefix={"฿"}
-                      />{" "}
-                    </td>
-                    <td className="font_white">
-                      {" "}
-                      <NumberFormat
-                        value={d.drNow}
+                        decimalScale={2}
                         displayType={"text"}
                         thousandSeparator={true}
                         prefix={"฿"}
@@ -349,6 +368,7 @@ export const CateShowList = ({ typeSeleted }) => {
                 ยอดของเดบิตทั้งหมด :{" "}
                 <NumberFormat
                   value={totalDrPlus}
+                  decimalScale={2}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"฿"}
@@ -360,6 +380,7 @@ export const CateShowList = ({ typeSeleted }) => {
                 <NumberFormat
                   value={totalCrPlus}
                   displayType={"text"}
+                  decimalScale={2}
                   thousandSeparator={true}
                   prefix={"฿"}
                 />{" "}
@@ -370,23 +391,26 @@ export const CateShowList = ({ typeSeleted }) => {
                 <NumberFormat
                   value={nowArrCrDr.drNow}
                   displayType={"text"}
+                  decimalScale={2}
                   thousandSeparator={true}
                   prefix={"฿"}
                 />
               </h5>
               <h5 className="font_white">
                 {" "}
-                ยอดคงเหลือเครดิตซ:{" "}
+                ยอดคงเหลือเครดิต:{" "}
                 <NumberFormat
                   value={nowArrCrDr.crNow}
                   displayType={"text"}
                   thousandSeparator={true}
+                  decimalScale={2}
                   prefix={"฿"}
                 />
               </h5>
               <div className="md-5">
                 {sreachM ? (
                   <button
+                    className="btn btn-success"
                     onClick={e => {
                       setShowAllBillD({
                         dataCate,
@@ -398,7 +422,7 @@ export const CateShowList = ({ typeSeleted }) => {
                       })
                     }}
                   >
-                    Export to e
+                    แสดงรายการ
                   </button>
                 ) : (
                   ""
@@ -433,6 +457,8 @@ export const CateShowList = ({ typeSeleted }) => {
           dataShow={showAllBillD}
           year={sreachYear}
           month={sreachM}
+          setShowAllBillD={setShowAllBillD}
+          dffS={dffS}
         />
       ) : (
         ""
@@ -440,30 +466,62 @@ export const CateShowList = ({ typeSeleted }) => {
     </div>
   )
 }
-const ShowDetailTableAll = ({ dataShow, year, month }) => {
+const ShowDetailTableAll = ({
+  dataShow,
+  year,
+  month,
+  setShowAllBillD,
+  dffS
+}) => {
   switch (dataShow.type) {
     case "all":
-      return <Case1 dataShow={dataShow} year={year} month={month} />
+      return (
+        <Case1
+          dataShow={dataShow}
+          year={year}
+          month={month}
+          setShowAllBillD={setShowAllBillD}
+          dffS={dffS}
+        />
+      )
     case "1":
-      return <Case1 dataShow={dataShow} year={year} month={month} />
+      return (
+        <Case1
+          dataShow={dataShow}
+          year={year}
+          month={month}
+          setShowAllBillD={setShowAllBillD}
+          dffS={dffS}
+        />
+      )
     case "2":
-      return <Case2 dataShow={dataShow} year={year} month={month} />
+      return (
+        <Case2
+          dataShow={dataShow}
+          year={year}
+          month={month}
+          setShowAllBillD={setShowAllBillD}
+          dffS={dffS}
+        />
+      )
     default:
       return <h1> Show</h1>
   }
 }
 
-const Case1 = ({ dataShow, year, month }) => {
-  const { dataCate, totalCrPlus, totalDrPlus } = dataShow
-  const drTotal = dataCate.reduce((sum, d) => (sum += parseInt(d.drNow)), 0)
-  const crTotal = dataCate.reduce((sum, d) => (sum += parseInt(d.drNow)), 0)
+const Case1 = ({ dataShow, year, month, setShowAllBillD, dffS }) => {
+  const { dataCate } = dataShow
+  const drTotal = dataCate.reduce((sum, d) => (sum += parseFloat(d.drNow)), 0)
+  const crTotal = dataCate.reduce((sum, d) => (sum += parseFloat(d.drNow)), 0)
 
-  console.log(dataCate)
   const newSh = new SreactData().filterMonthS(month)
   const forMathData = `${newSh} ${month} ${year}`
   return (
     <div className="bkShowBillReal">
       {/* <h1 className="text-center mb-5 font_p">{title}</h1> */}
+      <h1 className="mt-3 ml-3 backState" onClick={e => setShowAllBillD(dffS)}>
+        <i className="fas fa-chevron-left" />
+      </h1>
       <HeaderTable date_is={forMathData} />
       <div className="container mt-4">
         <table className="table_now table">
@@ -485,6 +543,7 @@ const Case1 = ({ dataShow, year, month }) => {
                     {" "}
                     <NumberFormat
                       value={d.drNow}
+                      decimalScale={2}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"฿"}
@@ -514,6 +573,7 @@ const Case1 = ({ dataShow, year, month }) => {
                   {" "}
                   <NumberFormat
                     value={drTotal}
+                    decimalScale={2}
                     displayType={"text"}
                     thousandSeparator={true}
                     prefix={"฿"}
@@ -524,6 +584,7 @@ const Case1 = ({ dataShow, year, month }) => {
                 {" "}
                 <strong>
                   <NumberFormat
+                    decimalScale={2}
                     value={crTotal}
                     displayType={"text"}
                     thousandSeparator={true}
@@ -538,13 +599,25 @@ const Case1 = ({ dataShow, year, month }) => {
     </div>
   )
 }
-const Case2 = ({ dataShow, year, month }) => {
-  const { dataCate, totalCrPlus, totalDrPlus } = dataShow
+const Case2 = ({ dataShow, year, month, setShowAllBillD, dffS }) => {
+  const { dataCate } = dataShow
+  const dataOfIncom = dataCate.filter(d => 400 <= d.id_type && d.id_type <= 500)
+  const dataOfOutCome = dataCate.filter(
+    d => 500 <= d.id_type && d.id_type <= 600
+  )
+  console.log({ dataOfIncom })
   const newSh = new SreactData().filterMonthS(month)
   const forMathData = `${newSh} ${month} ${year}`
   return (
     <div className="bkShowBillReal">
+      <h1 className="mt-3 ml-3 backState" onClick={e => setShowAllBillD(dffS)}>
+        <i className="fas fa-chevron-left" />
+      </h1>
       <HeaderTable date_is={forMathData} />
+      <div className="container">
+        <TableIncomeT income_list={dataOfIncom} />
+        <TableOutT out_comeList={dataOfOutCome} />
+      </div>
     </div>
   )
 }
@@ -555,3 +628,103 @@ const HeaderTable = ({ date_is }) => (
     <h5 className="text-center mt-4"> วันที่ : {date_is} </h5>
   </div>
 )
+
+const TableOutT = ({ out_comeList }) => {
+  let totalI = 0
+  return (
+    <table className="table table_now">
+      <thead>
+        <tr>
+          <th>ค่าใช้จ่าย</th>
+          <th>จำนวนเงิน</th>
+        </tr>
+      </thead>
+      <tbody>
+        {out_comeList.map((d, i) => {
+          const moneySeleted = d.crTotal ? d.crTotal : d.drTotal
+          totalI += moneySeleted
+          return (
+            <tr key={i}>
+              <td>{d.name_type}</td>
+              <td>
+                <NumberFormat
+                  value={moneySeleted}
+                  decimalScale={2}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"฿"}
+                />
+              </td>
+            </tr>
+          )
+        })}
+        <tr>
+          <td>
+            <strong>รวม</strong>
+          </td>
+          <td>
+            <strong>
+              <NumberFormat
+                value={totalI}
+                decimalScale={2}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"฿"}
+              />
+            </strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+const TableIncomeT = ({ income_list }) => {
+  let totalO = 0
+  return (
+    <table className="table table_now">
+      <thead>
+        <tr>
+          <th>รายได้</th>
+          <th>จำนวนเงิน</th>
+        </tr>
+      </thead>
+      <tbody>
+        {income_list.map((d, i) => {
+          const moneySeleted = d.crTotal ? d.crTotal : d.drTotal
+          // setTI(totalIncome + moneySeleted)
+          totalO += moneySeleted
+          return (
+            <tr key={i}>
+              <td>{d.name_type}</td>
+              <td>
+                <NumberFormat
+                  value={moneySeleted}
+                  decimalScale={2}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                  prefix={"฿"}
+                />
+              </td>
+            </tr>
+          )
+        })}
+        <tr>
+          <td>
+            <strong>รวม</strong>
+          </td>
+          <td>
+            <strong>
+              <NumberFormat
+                value={totalO}
+                decimalScale={2}
+                displayType={"text"}
+                thousandSeparator={true}
+                prefix={"฿"}
+              />
+            </strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}

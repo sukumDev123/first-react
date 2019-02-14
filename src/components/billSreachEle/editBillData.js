@@ -149,8 +149,8 @@ const DataBillArr = ({ editDataStateA, setEditData }) => {
   )
 }
 const ShowCrDr = ({ dataBill }) => {
-  const totalDr = dataBill.arrInfo.reduce((sum, d) => sum + parseInt(d.dr), 0)
-  const totalCr = dataBill.arrInfo.reduce((sum, d) => sum + parseInt(d.cr), 0)
+  const totalDr = dataBill.arrInfo.reduce((sum, d) => sum + parseFloat(d.dr), 0)
+  const totalCr = dataBill.arrInfo.reduce((sum, d) => sum + parseFloat(d.cr), 0)
 
   return (
     <div className="p-3">

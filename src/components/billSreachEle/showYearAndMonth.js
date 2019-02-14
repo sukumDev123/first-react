@@ -26,7 +26,7 @@ export const ShowYearAndMonth = () => {
         const hadnlerA = data.map(res => {
           return {
             ...res,
-            date_is: parseInt(res.date_is)
+            date_is: parseFloat(res.date_is)
           }
         })
         document.getElementById("loadding_bk").style.display = "none"
@@ -42,7 +42,7 @@ export const ShowYearAndMonth = () => {
   useEffect(
     () => {
       const handlerData = tempArr.filter(
-        d => new Date(d.date_is).getFullYear() === parseInt(formYearSelete)
+        d => new Date(d.date_is).getFullYear() === parseFloat(formYearSelete)
       )
       const monthA = handlerData
         .map(d => new Date(d.date_is).getMonth())
@@ -66,8 +66,8 @@ export const ShowYearAndMonth = () => {
         .filter((item, index, arr) => arr.indexOf(item) === index)
       const arrTotal = id_type.map(id => {
         const arr = handlerDataFromMonth.filter(data => data.id === id)
-        const totalCr = arr.reduce((sum, data) => sum + parseInt(data.cr), 0)
-        const totalDr = arr.reduce((sum, data) => sum + parseInt(data.dr), 0)
+        const totalCr = arr.reduce((sum, data) => sum + parseFloat(data.cr), 0)
+        const totalDr = arr.reduce((sum, data) => sum + parseFloat(data.dr), 0)
         return {
           arrInfor: arr,
           id_type: id,
@@ -152,6 +152,7 @@ export const ShowYearAndMonth = () => {
                               displayType={"text"}
                               thousandSeparator={true}
                               prefix={"฿"}
+                              decimalScale={2}
                             />{" "}
                           </td>
                           <td className="font_white">
@@ -160,6 +161,7 @@ export const ShowYearAndMonth = () => {
                               value={res.cr}
                               displayType={"text"}
                               thousandSeparator={true}
+                              decimalScale={2}
                               prefix={"฿"}
                             />{" "}
                           </td>
@@ -171,6 +173,7 @@ export const ShowYearAndMonth = () => {
                     {"เดบิตทั้งหมด : "}
                     <NumberFormat
                       value={d.totalDr}
+                      decimalScale={2}
                       displayType={"text"}
                       thousandSeparator={true}
                       prefix={"฿"}
@@ -183,6 +186,7 @@ export const ShowYearAndMonth = () => {
                       value={d.totalCr}
                       displayType={"text"}
                       thousandSeparator={true}
+                      decimalScale={2}
                       prefix={"฿"}
                     />
                     {" บาท"}

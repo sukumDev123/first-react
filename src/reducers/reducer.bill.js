@@ -5,7 +5,8 @@ export const typeRedecer = {
   accArr: [],
   type: "",
   id_doc: "",
-  setInfor: false
+  setInfor: false,
+  typeBill: ""
 }
 
 export const reducerFirst = (state, action) => {
@@ -13,19 +14,7 @@ export const reducerFirst = (state, action) => {
     case "ADD ARRAY ACCOUNTENCY": {
       const newDate = action.payload
 
-      let newDateToTypeh = {
-        ...newDate,
-        cr:
-          newDate.cr != 0
-            ? parseInt(newDate.cr.split(",").reduce((sum, d) => sum + d, ""))
-            : 0,
-        dr:
-          newDate.dr != 0
-            ? parseInt(newDate.dr.split(",").reduce((sum, d) => sum + d, ""))
-            : 0
-      }
-
-      return { ...state, accArr: [...state.accArr, newDateToTypeh] }
+      return { ...state, accArr: [...state.accArr, newDate] }
     }
     case "ADD DATE IS BILL": {
       const { id_bill, dateIs, detail, id_doc } = action.payload
@@ -42,6 +31,12 @@ export const reducerFirst = (state, action) => {
       return {
         ...state,
         setInfor: false
+      }
+    }
+    case "SET TYPE BILL": {
+      return {
+        ...state,
+        typeBill: action.payload.typeBill
       }
     }
 

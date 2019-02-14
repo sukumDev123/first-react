@@ -1,5 +1,3 @@
-import { id } from "postcss-selector-parser"
-
 export class SreactData {
   constructor(data) {
     this.data = data
@@ -20,21 +18,19 @@ export class SreactData {
       .split("\n")
       .map((d, i) => d.split(" ").filter(d => d)[0])
   }
-  monthNumber() {
-    return [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-  }
+
   filterMonth(indexMonth) {
     return this.totalMonth()[indexMonth]
   }
   filterMonthS(stringMonth) {
-    console.log(stringMonth)
     const findFIlter = this.totalMonth()
+    const data = findFIlter
       .map((d, i) => {
         if (d === stringMonth) return i
       })
       .filter(d => d)
 
-    return this.monthNumber()[findFIlter[0]]
+    return [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][data[0]]
   }
   messageToUser() {
     return "You must input data from contructor."
@@ -100,10 +96,10 @@ export class SreactData {
   }
   /** use in method */
   sumDrTotal(data) {
-    return data.reduce((sum, data) => sum + parseInt(data.dr), 0)
+    return data.reduce((sum, data) => sum + parseFloat(data.dr), 0)
   }
   sumCrTotal(data) {
-    return data.reduce((sum, data) => sum + parseInt(data.cr), 0)
+    return data.reduce((sum, data) => sum + parseFloat(data.cr), 0)
   }
 
   /** handler arr from user data. */

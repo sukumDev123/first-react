@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import { getAccType } from "../services/categoryS"
-import NumberFormat from "react-number-format"
 
 export const FormBill = ({ state, dispatch }) => {
   const [id_acc, setIdAcc] = useState("")
@@ -78,21 +77,18 @@ export const FormBill = ({ state, dispatch }) => {
         </div>
         <div className="md-form">
           <label className="font_black"> เดบิต </label>
-          <NumberFormat
-            value={dr}
+          <input
             className="form-control"
+            value={dr}
             onChange={e => setDr(e.target.value)}
-            thousandSeparator={true}
           />
         </div>
         <div className="md-form">
           <label className="font_black"> เครดิต </label>
-
-          <NumberFormat
-            value={cr}
+          <input
             className="form-control"
+            value={cr}
             onChange={e => setCr(e.target.value)}
-            thousandSeparator={true}
           />
         </div>
         <div className="md-form mt-4">

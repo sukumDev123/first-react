@@ -7,6 +7,7 @@ export const Form = ({ state, dispatch }) => {
   const [date, setDate] = useState("")
   const [detail, setDetaill] = useState("")
   const [id_doc, setIdDoc] = useState("")
+
   function subMitBillData(e) {
     e.preventDefault()
     if (id_bill && date) {

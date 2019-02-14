@@ -11,8 +11,8 @@ export const List = ({ list, state, dispatch }) => {
     </p>
   )
 
-  let drTotal = list.reduce((sum, data) => sum + parseInt(data.dr), 0)
-  let crTotal = list.reduce((sum, data) => sum + parseInt(data.cr), 0)
+  let drTotal = list.reduce((sum, data) => sum + parseFloat(data.dr), 0)
+  let crTotal = list.reduce((sum, data) => sum + parseFloat(data.cr), 0)
 
   function saveToDb(e) {
     setBtnClick(true)
@@ -23,8 +23,14 @@ export const List = ({ list, state, dispatch }) => {
 
       if (id_bill && dateIs && accArr.length) {
         // console.log({ state })
-        const totalDr = accArr.reduce((sum, data) => sum + parseInt(data.dr), 0)
-        const totalCr = accArr.reduce((sum, data) => sum + parseInt(data.cr), 0)
+        const totalDr = accArr.reduce(
+          (sum, data) => sum + parseFloat(data.dr),
+          0
+        )
+        const totalCr = accArr.reduce(
+          (sum, data) => sum + parseFloat(data.cr),
+          0
+        )
         console.log({ totalCr, totalDr, accArr })
         if (totalDr === totalCr) {
           // console.log("Hi")
@@ -86,18 +92,22 @@ export const List = ({ list, state, dispatch }) => {
                   <td> {d.type} </td>
 
                   <td>
-                    <NumberFormat
-                      value={d.dr}
-                      displayType={"text"}
-                      thousandSeparator={true}
-                      prefix={"฿"}
-                    />
+                    {
+                      <NumberFormat
+                        value={d.dr}
+                        displayType={"text"}
+                        decimalScale={2}
+                        thousandSeparator={true}
+                        prefix={"฿"}
+                      />
+                    }
                   </td>
 
                   <td>
                     <NumberFormat
                       value={d.cr}
                       displayType={"text"}
+                      decimalScale={2}
                       thousandSeparator={true}
                       prefix={"฿"}
                     />
@@ -124,6 +134,7 @@ export const List = ({ list, state, dispatch }) => {
             displayType={"text"}
             thousandSeparator={true}
             prefix={"฿"}
+            decimalScale={2}
             className="font_white text_lg"
           />
           &nbsp;
@@ -136,6 +147,7 @@ export const List = ({ list, state, dispatch }) => {
             displayType={"text"}
             thousandSeparator={true}
             prefix={"฿"}
+            decimalScale={2}
             className="font_white text_lg"
           />
           &nbsp;

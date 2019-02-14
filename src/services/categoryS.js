@@ -20,3 +20,5 @@ export const updateDataBill = (id_bill, dataBill) =>
   axios.put(`${host_api}/api/acc/edit/bill?id_bill=${id_bill}`, dataBill)
 export const addOneBill = data =>
   axios.post(`${host_api}/api/acc/add/oneBillData`, data)
+export const getAllBIllByOneType = () =>
+  axios.get(`${host_api}/api/acc/billOneType`)

@@ -44,22 +44,56 @@ const errPage = () => (
 )
 const AddAccountenCy = () => {
   const [state, dispatch] = useReducer(reducerFirst, typeRedecer)
+
   // useE
   return (
     <div className="components">
-      <div className="mt-3">
-        <List list={state.accArr} state={state} dispatch={dispatch} />
-      </div>
+      {state.typeBill ? (
+        <div>
+          <h5
+            className="font_white backState"
+            onClick={e => {
+              dispatch({
+                type: "SET TYPE BILL",
+                payload: { typeBill: "" }
+              })
+            }}
+          >
+            {" "}
+            แก้ไขประเภทบิล
+          </h5>
+          <div className="mt-3">
+            <List list={state.accArr} state={state} dispatch={dispatch} />
+          </div>
 
-      <h2 className="text-center font_white p-3"> Add Accountancy </h2>
-      <div className="row">
-        <div className="col-12 col-md-6">
-          <Form state={state} dispatch={dispatch} />
+          <h2 className="text-center font_white p-3"> Add Accountancy </h2>
+          <div className="row">
+            <div className="col-12 col-md-6">
+              <Form state={state} dispatch={dispatch} />
+            </div>
+            <div className="col-12 col-md-6">
+              <FormBill state={state} dispatch={dispatch} />
+            </div>
+          </div>
         </div>
-        <div className="col-12 col-md-6">
-          <FormBill state={state} dispatch={dispatch} />
+      ) : (
+        <div className="beforeInputBuill">
+          <label className="font_black"> เลือกประเภทบิลก่อน: </label>
+          <select
+            className="form-control"
+            onChange={e => {
+              dispatch({
+                type: "SET TYPE BILL",
+                payload: { typeBill: e.target.value }
+              })
+            }}
+          >
+            <option value=""> เลือกประเภทบิล</option>
+            <option value="1">บิลธรรมดา</option>
+            <option value="2"> บิลก่อนปิด</option>
+          </select>
         </div>
-      </div>
+      )}
     </div>
   )
 }

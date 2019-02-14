@@ -187,12 +187,12 @@ const TableBillSreach = ({
     }
   }
   return (
-    <div className="mt-3 mb-3" key={index}>
+    <div className="mt-3 mb-3 borderTable " key={index}>
       <h4 className="font_white">รหัสบิล : {dataArr.id_bill}</h4>
       <h4 className="font_white">วันที่ : {dateHandler(dataArr.date_is)}</h4>
       <h4 className="font_white"> รายละเอียด : </h4>
-      <p className="font_white p-3">{dataArr.id_bill}</p>
-      <table className="table_now">
+      <p className="font_white ml-3">{dataArr.detail}</p>
+      <table className="table">
         <thead>
           <tr>
             <th> ชนิด </th>
@@ -209,6 +209,7 @@ const TableBillSreach = ({
               <td className="font_white">
                 <NumberFormat
                   value={drCr.dr}
+                  decimalScale={2}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"฿"}
@@ -217,6 +218,7 @@ const TableBillSreach = ({
               <td className="font_white">
                 <NumberFormat
                   value={drCr.cr}
+                  decimalScale={2}
                   displayType={"text"}
                   thousandSeparator={true}
                   prefix={"฿"}
@@ -233,6 +235,7 @@ const TableBillSreach = ({
           value={totalDr}
           displayType={"text"}
           thousandSeparator={true}
+          decimalScale={2}
           prefix={"฿"}
         />
         บาท
@@ -244,6 +247,7 @@ const TableBillSreach = ({
           value={totalCr}
           displayType={"text"}
           thousandSeparator={true}
+          decimalScale={2}
           prefix={"฿"}
         />
         บาท
